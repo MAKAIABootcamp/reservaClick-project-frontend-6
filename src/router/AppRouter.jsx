@@ -8,9 +8,7 @@ const AppRouter = () => {
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route path='/'>
-            <Route path='register' element={<Register />} />
-          </Route>
+          <Route path='/register' element={<Register />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
