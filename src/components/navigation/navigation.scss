@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Alata&family=Balsamiq+Sans:wght@400;700&family=Barlow&family=Barlow+Condensed&family=Bellefair&family=Courgette&family=Epilogue:wght@500;700&family=Josefin+Sans:wght@300&family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600;700&family=Quicksand&family=Sarabun:wght@400;600;700&family=Space+Grotesk&display=swap');
+@import '../../variables';
+
+.main_container_navigation {
+  &__mobile {
+    width: 100%;
+    position: fixed;
+    top: 97%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 1em;
+    border-radius: 2em 2em 0 0;
+    background-color: lightcyan;
+
+    &__icon {
+      width: 2.5em;
+      height: 2.5em;
+      margin-bottom: 1em;
+    }
+
+    @media screen and (min-width: 600px) {
+      display: none;
+    }
+  }
+
+  &__desktop {
+    width: 100%;
+    height: 6%;
+    position: fixed;
+    top: 3%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: lightcyan;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    &__link {
+      padding-top: 2em;
+      margin: 2em;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 600;
+    }
+
+    @media screen and (max-width: 600px) {
+      display: none;
+    }
+  }
+}
