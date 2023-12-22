@@ -81,6 +81,9 @@ const Register = () => {
               </span>
             </InputRightElement>
           </InputGroup>
+          <Button type='submit' colorScheme='teal' variant='outline'>
+            Imagen de perfil
+          </Button>
           <Button type='submit' colorScheme='blue'>
             Registrarse
           </Button>
