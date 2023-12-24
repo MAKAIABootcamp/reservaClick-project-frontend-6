@@ -6,6 +6,7 @@ import Home from '../pages/home/Home';
 import { Layout } from '../components/layout/Layout';
 import Login from '../pages/login/Login';
 import UserProfile from '../pages/userProfile/UserProfile';
+import Calendar from '../pages/calendar/Calendar';
 
 const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ const AppRouter = () => {
             <Route path='/login' element={<Login />} />
             <Route path='/home' element={<Home />} />
             <Route path='/profile' element={<UserProfile />} />
+            <Route path='/calendar' element={<Calendar />} />
           </Route>
         </Routes>
       </BrowserRouter>
