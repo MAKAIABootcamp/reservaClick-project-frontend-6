@@ -23,7 +23,7 @@ import './home.scss';
 const Home = () => {
   return (
     <main className='main_container'>
-      <Heading size='lg'>!Bienvenido a ReservaClick¡</Heading>
+      <Heading size='xl'>!Bienvenido a ReservaClick¡</Heading>
       <form className='main_container__form'>
         <InputGroup>
           <Input

@@ -81,13 +81,7 @@ const Calendar = () => {
 
   return (
     <Box p={4} className='calendar'>
-      <Heading
-        as='h2'
-        mb={4}
-        size='lg'
-        display={'flex'}
-        justifyContent={'center'}
-      >
+      <Heading as='h2' size='xl' display={'flex'} justifyContent={'center'}>
         Reserva tu cita
       </Heading>
       <Text fontSize='xl' mb={4}>

@@ -4,15 +4,9 @@ import {
   Image,
   Input,
   Button,
-  Stack,
-  InputLeftElement,
-  InputRightElement,
-  InputGroup,
-  Text,
   useEditableControls,
   EditablePreview,
   Editable,
-  EditableTextarea,
   IconButton,
   EditableInput,
   Flex,
@@ -20,10 +14,10 @@ import {
 } from '@chakra-ui/react';
 
 import userProfileImage from '../../assets/img/userProfile.png';
-import './userProfile.scss';
 import { FaEdit } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa';
 import { FaWindowClose } from 'react-icons/fa';
+import './userProfile.scss';
 
 const UserProfile = () => {
   function EditableControls() {
@@ -48,7 +42,9 @@ const UserProfile = () => {
 
   return (
     <main className='main_container'>
-      <Heading>Perfil de usuario</Heading>
+      <Heading as='h1' size='xl'>
+        Perfil de usuario
+      </Heading>
       <br />
       <Image src={userProfileImage} alt='user profile' boxSize='9em' />
       <br />

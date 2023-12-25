@@ -40,7 +40,7 @@ const Reservation = () => {
   return (
     <main>
       <section className='section_reservas'>
-        <Heading className='titulo'>MIS RESERVAS</Heading>
+        <Heading className='titulo'>Mis Reservas</Heading>
         <Reserva
           local='Barbaros'
           fecha='2023-12-23 (sábado)'

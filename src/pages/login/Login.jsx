@@ -9,7 +9,7 @@ import {
   InputRightElement,
   InputGroup,
 } from '@chakra-ui/react';
-import { FaUser, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { MdOutlinePhoneAndroid } from 'react-icons/md';
@@ -67,6 +67,7 @@ const Login = () => {
       <p>
         <Link to='/register'>Crear nueva cuenta</Link>
       </p>
+      <br />
       <Stack spacing={5}>
         <Button
           rightIcon={<FaGoogle />}
