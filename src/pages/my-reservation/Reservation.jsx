@@ -1,12 +1,18 @@
 import React from 'react';
+import { Button, Heading, Box } from '@chakra-ui/react';
 import './reservation.scss';
-import { ChakraProvider, Button, Heading, Box } from '@chakra-ui/react';
 
 const Reserva = ({ local, fecha, hora, onEditar, onCancelar }) => (
   <section className='section_container'>
-    <a>{local}</a>
-    <h2>{fecha}</h2>
-    <p>{hora}</p>
+    <Heading as='h3' size='lg'>
+      {local}
+    </Heading>
+    <Heading as='h3' size='md'>
+      {fecha}
+    </Heading>
+    <Heading as='h3' size='sm'>
+      {hora}
+    </Heading>
     <Box textAlign='center'>
       <Button
         bg='transparent'
@@ -32,11 +38,9 @@ const Reserva = ({ local, fecha, hora, onEditar, onCancelar }) => (
 
 const Reservation = () => {
   return (
-    <ChakraProvider>
-      <Heading className='titulo'>MIS RESERVAS</Heading>
-
-      {/* Primera reserva */}
+    <main>
       <section className='section_reservas'>
+        <Heading className='titulo'>MIS RESERVAS</Heading>
         <Reserva
           local='Barbaros'
           fecha='2023-12-23 (sábado)'
@@ -44,9 +48,8 @@ const Reservation = () => {
           onEditar={() => console.log('Editar primera reserva')}
           onCancelar={() => console.log('Cancelar primera reserva')}
         />
-        <Box width='60%' height='1px' bg='white' mx='auto' my={-6} />
+        <Box width='50%' height='1px' bg='white' mx='auto' my={-6} />
 
-        {/* Segunda reserva */}
         <Reserva
           local='Pies de angel'
           fecha='2023-12-25 (lunes)'
@@ -65,7 +68,7 @@ const Reservation = () => {
         />
         <Box width='60%' height='1px' bg='white' mx='auto' my={-6} />
       </section>
-    </ChakraProvider>
+    </main>
   );
 };
 
