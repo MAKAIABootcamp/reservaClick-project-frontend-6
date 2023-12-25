@@ -7,6 +7,7 @@ import { Layout } from '../components/layout/Layout';
 import Login from '../pages/login/Login';
 import UserProfile from '../pages/userProfile/UserProfile';
 import Calendar from '../pages/calendar/Calendar';
+import Reservation from '../pages/my-reservation/Reservation';
 
 const AppRouter = () => {
   return (
@@ -19,6 +20,7 @@ const AppRouter = () => {
             <Route path='/home' element={<Home />} />
             <Route path='/profile' element={<UserProfile />} />
             <Route path='/calendar' element={<Calendar />} />
+            <Route path='/reservation' element={<Reservation />} />
           </Route>
         </Routes>
       </BrowserRouter>
