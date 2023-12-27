@@ -21,8 +21,7 @@ import './login.scss';
 const Login = () => {
   /* estados para mostrar o esconder la contraseña */
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () =>
-    setShowPassword([!showPassword, showPassword]);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
   /* --------------------------------------------- */
 
   return (
@@ -54,7 +53,7 @@ const Login = () => {
             />
             <InputRightElement width='4rem'>
               <span onClick={handleClickShowPassword}>
-                {showPassword[0] ? <FaRegEyeSlash /> : <FaRegEye />}
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
               </span>
             </InputRightElement>
           </InputGroup>
