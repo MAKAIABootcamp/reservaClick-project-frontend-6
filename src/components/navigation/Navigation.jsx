@@ -10,17 +10,31 @@ const Navigation = () => {
   return (
     <main className='main_container_navigation'>
       <div className='main_container_navigation__mobile'>
-        <IoHome className='main_container_navigation__mobile__icon' />
-        <FaCalendarAlt className='main_container_navigation__mobile__icon' />
-        <FaCircleUser className='main_container_navigation__mobile__icon' />
+        <Link to='home'>
+          <IoHome className='main_container_navigation__mobile__icon' />
+        </Link>
+        <Link to='reservation'>
+          <FaCalendarAlt className='main_container_navigation__mobile__icon' />
+        </Link>
+        <Link to='/profile'>
+          <FaCircleUser className='main_container_navigation__mobile__icon' />
+        </Link>
       </div>
       <div className='main_container_navigation__desktop'>
         <nav>
-          <Link className='main_container_navigation__desktop__link'>Home</Link>
-          <Link className='main_container_navigation__desktop__link'>
+          <Link to='/home' className='main_container_navigation__desktop__link'>
+            Home
+          </Link>
+          <Link
+            to='/reservation'
+            className='main_container_navigation__desktop__link'
+          >
             Mis reservas
           </Link>
-          <Link className='main_container_navigation__desktop__link'>
+          <Link
+            to='/profile'
+            className='main_container_navigation__desktop__link'
+          >
             Mi perfil
           </Link>
         </nav>
