@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import uploadFile from '../../services/uploadFile';
+import { useDispatch } from 'react-redux';
+import { createAnAccountAsync } from '../../store/users/userActions';
+import { useFormik } from 'formik';
+import { object, string, ref } from 'yup';
+import { sweetAlert } from '../../utils/alerts';
 import {
   Input,
   Button,
@@ -8,10 +14,14 @@ import {
   InputLeftElement,
   InputRightElement,
   InputGroup,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
 } from '@chakra-ui/react';
 import { FaUser, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import cameraIcon from '../../assets/icon/camera-icon.svg';
 
 import './register.scss';
 
@@ -24,67 +34,146 @@ const Register = () => {
     setShowPassword([showPassword[0], !showPassword[1]]);
   /* --------------------------------------------- */
 
+  const [file, setFile] = useState(null);
+
+  const dispatch = useDispatch();
+
+  const schema = object({
+    name: string().min(6, 'Mínimo 6 caracteres').required('Campo requerido'),
+    email: string()
+      .email('Es necesario un correo valido')
+      .required('Campo requerido'),
+    password: string()
+      .min(6, 'Mínimo 6 caracteres')
+      .required('Campo requerido'),
+    confirmPassword: string()
+      .min(6, 'Mínimo 6 caracteres')
+      .required('Campo requerido')
+      .oneOf([ref('password'), null], 'Las contraseñas deben coincidir'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationSchema: schema,
+    onSubmit: async (values, actions) => {
+      const photoURL = await uploadFile(file);
+      const newUser = {
+        ...values,
+        photoURL,
+      };
+      // console.log(newUser);
+      dispatch(createAnAccountAsync(newUser));
+      actions.resetForm({});
+    },
+  });
+
   return (
     <main className='main_container'>
-      <br />
       <Heading>Crea tu cuenta</Heading>
-      <form className='main_container__form'>
+      <form className='main_container__form' onSubmit={formik.handleSubmit}>
         <Stack spacing={5}>
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <FaUser />
-            </InputLeftElement>
-            <Input
-              type='text'
-              variant='filled'
-              placeholder='Nombre y apellido'
-              w={[300, 400, 500]}
-            />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <MdEmail />
-            </InputLeftElement>
-            <Input
-              type='email'
-              variant='filled'
-              placeholder='Correo electrónico'
-            />
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <RiLockPasswordFill />
-            </InputLeftElement>
-            <Input
-              type={showPassword[0] ? 'text' : 'password'}
-              variant='filled'
-              placeholder='Contraseña'
-            />
-            <InputRightElement width='4rem'>
-              <span onClick={handleClickShowPassword}>
-                {showPassword[0] ? <FaRegEyeSlash /> : <FaRegEye />}
-              </span>
-            </InputRightElement>
-          </InputGroup>
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <RiLockPasswordFill />
-            </InputLeftElement>
-            <Input
-              type={showPassword[1] ? 'text' : 'password'}
-              variant='filled'
-              placeholder='Confirmar contraseña'
-            />
-            <InputRightElement width='4rem'>
-              <span onClick={handleClickShowPasswordConfirmation}>
-                {showPassword[1] ? <FaRegEyeSlash /> : <FaRegEye />}
-              </span>
-            </InputRightElement>
-          </InputGroup>
-          <Button type='submit' colorScheme='teal' variant='outline'>
-            Imagen de perfil
-          </Button>
-          <Button type='submit' colorScheme='blue'>
+          <FormControl isInvalid={formik.errors.name}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <FaUser />
+              </InputLeftElement>
+              <Input
+                type='text'
+                name='name'
+                variant='filled'
+                placeholder='Nombre y apellido'
+                onChange={formik.handleChange}
+                value={formik.values.name}
+                w={[300, 400, 500]}
+              />
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={formik.errors.email}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <MdEmail />
+              </InputLeftElement>
+              <Input
+                type='email'
+                name='email'
+                variant='filled'
+                placeholder='Correo electrónico'
+                onChange={formik.handleChange}
+                value={formik.values.email}
+              />
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={formik.errors.password}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <RiLockPasswordFill />
+              </InputLeftElement>
+              <Input
+                type={showPassword[0] ? 'text' : 'password'}
+                name='password'
+                variant='filled'
+                placeholder='Contraseña'
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+              <InputRightElement width='4rem'>
+                <span onClick={handleClickShowPassword}>
+                  {showPassword[0] ? <FaRegEyeSlash /> : <FaRegEye />}
+                </span>
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={formik.errors.confirmPassword}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <RiLockPasswordFill />
+              </InputLeftElement>
+              <Input
+                type={showPassword[1] ? 'text' : 'password'}
+                name='confirmPassword'
+                variant='filled'
+                placeholder='Confirmar contraseña'
+                onChange={formik.handleChange}
+                value={formik.values.confirmPassword}
+              />
+              <InputRightElement width='4rem'>
+                <span onClick={handleClickShowPasswordConfirmation}>
+                  {showPassword[1] ? <FaRegEyeSlash /> : <FaRegEye />}
+                </span>
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.confirmPassword}</FormErrorMessage>
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor='file' className='fileText'>
+              Foto de perfil
+              <img src={cameraIcon} alt='cameraIcon' className='cameraIcon' />
+              <input
+                id='file'
+                name='file'
+                type='file'
+                onChange={event => {
+                  const file = event.target.files[0];
+                  setFile(file);
+                }}
+              />
+              <span id='imageName'>{file?.name || ''}</span>
+            </FormLabel>
+          </FormControl>
+
+          <Button
+            type='submit'
+            colorScheme='blue'
+            isDisabled={!file ? true : false}
+          >
             Registrarse
           </Button>
         </Stack>

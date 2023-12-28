@@ -10,13 +10,16 @@ import Calendar from '../pages/calendar/Calendar';
 import Reservation from '../pages/my-reservation/Reservation';
 import PrivateRoutes from './PrivateRoutes';
 import PublicRoutes from './PublicRoutes';
+import { useSelector } from 'react-redux';
 
 const AppRouter = () => {
+  const { isAuthenticated } = useSelector(store => store.user);
+
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<PrivateRoutes isAuthenticated={false} />}>
+          <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
             <Route element={<Layout />}>
               <Route path='/home' element={<Home />} />
               <Route path='/profile' element={<UserProfile />} />
@@ -25,7 +28,7 @@ const AppRouter = () => {
             </Route>
           </Route>
 
-          <Route element={<PublicRoutes isAuthenticated={false} />}>
+          <Route element={<PublicRoutes isAuthenticated={isAuthenticated} />}>
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
           </Route>
