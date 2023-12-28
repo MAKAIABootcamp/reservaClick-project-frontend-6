@@ -16,7 +16,7 @@ const AppRouter = () => {
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route element={<PrivateRoutes isAuthenticated={true} />}>
+          <Route element={<PrivateRoutes isAuthenticated={false} />}>
             <Route element={<Layout />}>
               <Route path='/home' element={<Home />} />
               <Route path='/profile' element={<UserProfile />} />
@@ -25,7 +25,7 @@ const AppRouter = () => {
             </Route>
           </Route>
 
-          <Route element={<PublicRoutes isAuthenticated={true} />}>
+          <Route element={<PublicRoutes isAuthenticated={false} />}>
             <Route path='/register' element={<Register />} />
             <Route path='/login' element={<Login />} />
           </Route>
