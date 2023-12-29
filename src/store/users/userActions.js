@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signInWithEmailAndPassword,
   signOut,
+  FacebookAuthProvider,
 } from 'firebase/auth';
 import { sweetAlert } from '../../utils/alerts';
 
@@ -80,6 +81,34 @@ export const loginWithEmailAndPassword = ({ email, password }) => {
   };
 };
 
+export const loginWithGoogle = () => async dispatch => {
+  const googleProvider = new GoogleAuthProvider();
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    console.log(userCredential);
+    dispatch(setIsAuthenticated(true));
+    dispatch(setUser(userCredential.user));
+  } catch (error) {
+    console.log(error);
+    dispatch(setIsAuthenticated(false));
+    setError({ error: true, code: error.code, message: error.message });
+  }
+};
+
+export const loginWithFacebook = () => async dispatch => {
+  const facebookProvider = new FacebookAuthProvider();
+  try {
+    const userCredential = await signInWithPopup(auth, facebookProvider);
+    console.log(userCredential);
+    dispatch(setIsAuthenticated(true));
+    dispatch(setUser(userCredential.user));
+  } catch (error) {
+    console.log(error);
+    dispatch(setIsAuthenticated(false));
+    setError({ error: true, code: error.code, message: error.message });
+  }
+};
+
 export const logoutAsync = () => {
   return async dispatch => {
     try {
@@ -94,18 +123,4 @@ export const logoutAsync = () => {
       );
     }
   };
-};
-
-export const loginWithGoogle = () => async dispatch => {
-  const googleProvider = new GoogleAuthProvider();
-  try {
-    const userCredential = await signInWithPopup(auth, googleProvider);
-    console.log(userCredential);
-    dispatch(setIsAuthenticated(true));
-    dispatch(setUser(userCredential.user));
-  } catch (error) {
-    console.log(error);
-    dispatch(setIsAuthenticated(false));
-    setError({ error: true, code: error.code, message: error.message });
-  }
 };

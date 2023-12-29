@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { object, string } from 'yup';
-import { loginWithEmailAndPassword } from '../../store/users/userActions';
+import {
+  loginWithEmailAndPassword,
+  loginWithFacebook,
+  loginWithGoogle,
+} from '../../store/users/userActions';
 import {
   Input,
   Button,
@@ -24,8 +28,6 @@ import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 
 import './login.scss';
-import { sweetAlert } from '../../utils/alerts';
-import Swal from 'sweetalert2';
 
 const Login = () => {
   /* estado para mostrar o esconder la contraseña */
@@ -33,7 +35,6 @@ const Login = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   /* --------------------------------------------- */
 
-  const { isAuthenticate, user, error } = useSelector(store => store.user);
   const dispatch = useDispatch();
 
   const schema = object({
@@ -56,6 +57,14 @@ const Login = () => {
       actions.resetForm({});
     },
   });
+
+  const handleLoginWithGoogle = () => {
+    dispatch(loginWithGoogle());
+  };
+
+  const handleLoginWithFacebook = () => {
+    dispatch(loginWithFacebook());
+  };
 
   return (
     <main className='main_container'>
@@ -116,10 +125,16 @@ const Login = () => {
           colorScheme='teal'
           variant='outline'
           w={[300, 400, 500]}
+          onClick={() => handleLoginWithGoogle()}
         >
           Iniciar sesión con Google
         </Button>
-        <Button rightIcon={<FaFacebook />} colorScheme='teal' variant='outline'>
+        <Button
+          rightIcon={<FaFacebook />}
+          colorScheme='teal'
+          variant='outline'
+          onClick={() => handleLoginWithFacebook()}
+        >
           Iniciar sesión con Facebok
         </Button>
         <Button
