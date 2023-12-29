@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFormik } from 'formik';
+import { object, string } from 'yup';
+import { loginWithEmailAndPassword } from '../../store/users/userActions';
 import {
   Input,
   Button,
@@ -8,56 +12,95 @@ import {
   InputLeftElement,
   InputRightElement,
   InputGroup,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
 } from '@chakra-ui/react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { MdOutlinePhoneAndroid } from 'react-icons/md';
-
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
+
 import './login.scss';
+import { sweetAlert } from '../../utils/alerts';
+import Swal from 'sweetalert2';
 
 const Login = () => {
-  /* estados para mostrar o esconder la contraseña */
+  /* estado para mostrar o esconder la contraseña */
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   /* --------------------------------------------- */
+
+  const { isAuthenticate, user, error } = useSelector(store => store.user);
+  const dispatch = useDispatch();
+
+  const schema = object({
+    email: string()
+      .email('Es necesario un correo valido')
+      .required('Campo requerido'),
+    password: string()
+      .min(6, 'Mínimo 6 caracteres')
+      .required('Campo requerido'),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: schema,
+    onSubmit: (values, actions) => {
+      dispatch(loginWithEmailAndPassword(values));
+      actions.resetForm({});
+    },
+  });
 
   return (
     <main className='main_container'>
       <br />
       <Heading>Inicio de sesión</Heading>
-      <form className='main_container__form'>
+      <form className='main_container__form' onSubmit={formik.handleSubmit}>
         <Stack spacing={5}>
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <MdEmail />
-            </InputLeftElement>
-            <Input
-              type='text'
-              variant='filled'
-              placeholder='Correo electrónico'
-              w={[300, 400, 500]}
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputLeftElement pointerEvents='none'>
-              <RiLockPasswordFill />
-            </InputLeftElement>
-            <Input
-              type={showPassword ? 'text' : 'password'}
-              variant='filled'
-              placeholder='Contraseña'
-            />
-            <InputRightElement width='4rem'>
-              <span onClick={handleClickShowPassword}>
-                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-              </span>
-            </InputRightElement>
-          </InputGroup>
-
+          <FormControl isInvalid={formik.errors.email}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <MdEmail />
+              </InputLeftElement>
+              <Input
+                type='email'
+                name='email'
+                variant='filled'
+                placeholder='Correo electrónico'
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                w={[300, 400, 500]}
+              />
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={formik.errors.password}>
+            <InputGroup>
+              <InputLeftElement pointerEvents='none'>
+                <RiLockPasswordFill />
+              </InputLeftElement>
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                name='password'
+                variant='filled'
+                placeholder='Contraseña'
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+              <InputRightElement width='4rem'>
+                <span onClick={handleClickShowPassword}>
+                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                </span>
+              </InputRightElement>
+            </InputGroup>
+            <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+          </FormControl>
           <Button type='submit' colorScheme='blue'>
             Iniciar Sesión
           </Button>

@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { createAnAccountAsync } from '../../store/users/userActions';
 import { useFormik } from 'formik';
 import { object, string, ref } from 'yup';
-import { sweetAlert } from '../../utils/alerts';
 import {
   Input,
   Button,
@@ -66,7 +65,6 @@ const Register = () => {
         ...values,
         photoURL,
       };
-      // console.log(newUser);
       dispatch(createAnAccountAsync(newUser));
       actions.resetForm({});
     },
