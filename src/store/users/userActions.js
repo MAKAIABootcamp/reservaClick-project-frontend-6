@@ -109,6 +109,33 @@ export const loginWithFacebook = () => async dispatch => {
   }
 };
 
+export const loginWithCodeAsync = code => {
+  return async dispatch => {
+    const confirmationResult = window.confirmationResult;
+    try {
+      confirmationResult.confirm(code).then(response => {
+        const user = response.user.auth.currentUser;
+        dispatch(setIsAuthenticated(true));
+        dispatch(
+          setUser({
+            id: user.uid,
+            email: user.email,
+            name: user.displayName,
+            photoURL: user.photoURL,
+            accessToken: user.accessToken,
+          })
+        );
+        dispatch(setError(false));
+      });
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        setError({ error: true, code: error.code, message: error.message })
+      );
+    }
+  };
+};
+
 export const logoutAsync = () => {
   return async dispatch => {
     try {
