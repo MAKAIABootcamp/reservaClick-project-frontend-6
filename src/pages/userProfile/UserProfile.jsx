@@ -17,6 +17,9 @@ import userProfileImage from '../../assets/img/userProfile.png';
 import { FaEdit } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa';
 import { FaWindowClose } from 'react-icons/fa';
+import { logoutAsync } from '../../store/users/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+
 import './userProfile.scss';
 
 const UserProfile = () => {
@@ -40,18 +43,30 @@ const UserProfile = () => {
     );
   }
 
+  const dispatch = useDispatch();
+  const { user } = useSelector(store => store.user);
+
+  const handleLogout = () => {
+    dispatch(logoutAsync());
+  };
+
   return (
     <main className='main_container'>
       <Heading as='h1' size='xl'>
         Perfil de usuario
       </Heading>
       <br />
-      <Image src={userProfileImage} alt='user profile' boxSize='9em' />
+      <Image
+        src={user.photoURL}
+        alt='user profile'
+        boxSize='9em'
+        borderRadius='full'
+      />
       <br />
       <Editable
         className='main_container__editable'
         textAlign='center'
-        defaultValue='Pepito Perez'
+        defaultValue={user.displayName}
         fontSize='2xl'
         isPreviewFocusable={false}
       >
@@ -63,7 +78,7 @@ const UserProfile = () => {
       <br />
       <Editable
         textAlign='center'
-        defaultValue='pepito25@gmail.com'
+        defaultValue={user.email}
         fontSize='2xl'
         isPreviewFocusable={false}
       >
@@ -73,7 +88,12 @@ const UserProfile = () => {
         <EditableControls />
       </Editable>
       <br />
-      <Button type='submit' colorScheme='blue' w={[300]}>
+      <Button
+        onClick={() => handleLogout()}
+        type='submit'
+        colorScheme='blue'
+        w={[300]}
+      >
         Cerrar Sesión
       </Button>
     </main>
