@@ -59,7 +59,7 @@ const UserProfile = () => {
       <Image
         src={user.photoURL}
         alt='user profile'
-        boxSize='9em'
+        boxSize='8em'
         borderRadius='full'
       />
       <br />
@@ -67,7 +67,7 @@ const UserProfile = () => {
         className='main_container__editable'
         textAlign='center'
         defaultValue={user.displayName}
-        fontSize='2xl'
+        fontSize={['20px', '25px']}
         isPreviewFocusable={false}
       >
         <EditablePreview />
@@ -79,7 +79,7 @@ const UserProfile = () => {
       <Editable
         textAlign='center'
         defaultValue={user.email}
-        fontSize='2xl'
+        fontSize={['20px', '25px']}
         isPreviewFocusable={false}
       >
         <EditablePreview />
