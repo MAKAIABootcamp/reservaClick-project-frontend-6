@@ -123,7 +123,7 @@ const Register = () => {
               />
               <InputRightElement width='4rem'>
                 <span onClick={handleClickShowPassword}>
-                  {showPassword[0] ? <FaRegEyeSlash /> : <FaRegEye />}
+                  {showPassword[0] ? <FaRegEye /> : <FaRegEyeSlash />}
                 </span>
               </InputRightElement>
             </InputGroup>
@@ -144,7 +144,7 @@ const Register = () => {
               />
               <InputRightElement width='4rem'>
                 <span onClick={handleClickShowPasswordConfirmation}>
-                  {showPassword[1] ? <FaRegEyeSlash /> : <FaRegEye />}
+                  {showPassword[1] ? <FaRegEye /> : <FaRegEyeSlash />}
                 </span>
               </InputRightElement>
             </InputGroup>

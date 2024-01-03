@@ -23,7 +23,7 @@ import {
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
-import { MdOutlinePhoneAndroid } from 'react-icons/md';
+// import { MdOutlinePhoneAndroid } from 'react-icons/md';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 
@@ -104,7 +104,7 @@ const Login = () => {
               />
               <InputRightElement width='4rem'>
                 <span onClick={handleClickShowPassword}>
-                  {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                  {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
                 </span>
               </InputRightElement>
             </InputGroup>
@@ -137,13 +137,13 @@ const Login = () => {
         >
           Iniciar sesión con Facebok
         </Button>
-        <Button
+        {/* <Button
           rightIcon={<MdOutlinePhoneAndroid />}
           colorScheme='teal'
           variant='outline'
         >
           Iniciar sesión con teléfono
-        </Button>
+        </Button> */}
       </Stack>
     </main>
   );

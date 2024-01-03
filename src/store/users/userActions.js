@@ -109,7 +109,23 @@ export const loginWithFacebook = () => async dispatch => {
   }
 };
 
-export const loginWithCodeAsync = code => {
+export const logoutAsync = () => {
+  return async dispatch => {
+    try {
+      await signOut(auth);
+      dispatch(setIsAuthenticated(false));
+      dispatch(setUser(null));
+      dispatch(setError(null));
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        setError({ error: true, code: error.code, message: error.message })
+      );
+    }
+  };
+};
+
+/* export const loginWithCodeAsync = code => {
   return async dispatch => {
     const confirmationResult = window.confirmationResult;
     try {
@@ -134,20 +150,4 @@ export const loginWithCodeAsync = code => {
       );
     }
   };
-};
-
-export const logoutAsync = () => {
-  return async dispatch => {
-    try {
-      await signOut(auth);
-      dispatch(setIsAuthenticated(false));
-      dispatch(setUser(null));
-      dispatch(setError(null));
-    } catch (error) {
-      console.error(error);
-      dispatch(
-        setError({ error: true, code: error.code, message: error.message })
-      );
-    }
-  };
-};
+}; */
