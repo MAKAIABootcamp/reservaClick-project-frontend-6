@@ -26,7 +26,7 @@ export const createAnAccountAsync = newUser => async dispatch => {
     });
 
     const userLogged = await createUserInCollection(user.uid, {
-      name: newUser.name,
+      displayName: newUser.name,
       email: newUser.email,
       photoURL: newUser.photoURL,
       accessToken: user.accessToken,
@@ -63,7 +63,7 @@ export const loginWithEmailAndPassword = ({ email, password }) => {
       dispatch(
         setUser({
           id: user.uid,
-          name: user.displayName,
+          displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
           accessToken: user.accessToken,
