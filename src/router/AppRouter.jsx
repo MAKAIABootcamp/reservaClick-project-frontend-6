@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ChakraProvider,
-  CircularProgress,
-  Heading,
-  Spinner,
-} from '@chakra-ui/react';
+import { ChakraProvider, Heading, Spinner } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Register from '../pages/register/Register';
 import Home from '../pages/home/Home';
@@ -39,15 +34,15 @@ const AppRouter = () => {
           })
         );
         //dispatch(setError(false));
-        setLoading(false);
       }
+      setLoading(false);
     });
   }, [dispatch, user]);
 
   if (loading) {
     return (
       <div className='spinner_container'>
-        <Heading className='title'>Loading</Heading>
+        <Heading className='title'>Cargando</Heading>
         <Spinner className='spinner' thickness='20px' />
       </div>
     );
@@ -59,7 +54,7 @@ const AppRouter = () => {
         <Routes>
           <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
             <Route element={<Layout />}>
-              <Route index path='/home' element={<Home />} />
+              <Route path='/home' element={<Home />} />
               <Route path='/profile' element={<UserProfile />} />
               <Route path='/calendar' element={<Calendar />} />
               <Route path='/reservation' element={<Reservation />} />
@@ -68,6 +63,7 @@ const AppRouter = () => {
 
           <Route element={<PublicRoutes isAuthenticated={isAuthenticated} />}>
             <Route path='/register' element={<Register />} />
+            <Route path='/' element={<Login />} />
             <Route path='/login' element={<Login />} />
           </Route>
         </Routes>
