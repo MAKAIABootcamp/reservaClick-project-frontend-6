@@ -34,8 +34,8 @@ export const createAnAccountAsync = newUser => async dispatch => {
 
     dispatch(
       setUser({
-        id: user.uid,
-        displayName: userLogged.name,
+        uid: user.uid,
+        displayName: userLogged.displayName,
         email: userLogged.email,
         photoURL: userLogged.photoURL,
         accessToken: user.accessToken,
@@ -62,7 +62,7 @@ export const loginWithEmailAndPassword = ({ email, password }) => {
       dispatch(setIsAuthenticated(true));
       dispatch(
         setUser({
-          id: user.uid,
+          uid: user.uid,
           displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
