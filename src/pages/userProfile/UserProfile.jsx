@@ -16,10 +16,9 @@ import {
 import { FaEdit } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa';
 import { FaWindowClose } from 'react-icons/fa';
-import { logoutAsync } from '../../store/users/userActions';
+import { deleteUserAccount, logoutAsync } from '../../store/users/userActions';
 import Swal from 'sweetalert2';
 
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { auth, firestore } from '../../firebase/firebaseConfig';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
@@ -32,10 +31,9 @@ import {
 } from '../../store/users/userSlice';
 
 import './userProfile.scss';
-import { useEffect } from 'react';
+import { sweetAlert } from '../../utils/alerts';
 
 const UserProfile = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector(store => store.user);
 
@@ -88,28 +86,8 @@ const UserProfile = () => {
       confirmButtonText: 'Eliminar',
     }).then(async result => {
       if (result.isConfirmed) {
-        await deleteDoc(doc(firestore, 'users', user.uid));
-
-        dispatch(setIsAuthenticated(false));
-        dispatch(setUser(null));
-        dispatch(setError(null));
-
-        const userAuth = auth.currentUser;
-        deleteUser(userAuth)
-          .then(() => {
-            console.log('user was deleted in firebase authentication');
-          })
-          .catch(error => {
-            console.log(error);
-          });
-
-        Swal.fire({
-          title: 'Eliminada!',
-          text: 'Tu cuenta ha sido eliminada',
-          icon: 'success',
-        }).then(() => {
-          window.location.reload(true);
-        });
+        dispatch(deleteUserAccount(user));
+        sweetAlert('success', 'Eliminada!', 'Tu cuenta ha sido eliminada');
       }
     });
   };

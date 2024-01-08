@@ -1,5 +1,5 @@
 import { setError, setIsAuthenticated, setUser } from './userSlice';
-import { auth } from '../../firebase/firebaseConfig';
+import { auth, firestore } from '../../firebase/firebaseConfig';
 import { createUserInCollection } from '../../services/userServices';
 import {
   createUserWithEmailAndPassword,
@@ -9,8 +9,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   FacebookAuthProvider,
+  deleteUser,
 } from 'firebase/auth';
 import { sweetAlert } from '../../utils/alerts';
+import { deleteDoc, doc } from 'firebase/firestore';
 
 export const createAnAccountAsync = newUser => async dispatch => {
   try {
@@ -123,6 +125,22 @@ export const logoutAsync = () => {
       );
     }
   };
+};
+
+export const deleteUserAccount = user => async dispatch => {
+  try {
+    await deleteDoc(doc(firestore, 'users', user.uid));
+    const userAuth = auth.currentUser;
+    await deleteUser(userAuth);
+
+    dispatch(setIsAuthenticated(false));
+    dispatch(setUser(null));
+    dispatch(setError(null));
+  } catch (error) {
+    console.log(error);
+    dispatch(setIsAuthenticated(false));
+    setError({ error: true, code: error.code, message: error.message });
+  }
 };
 
 /* export const loginWithCodeAsync = code => {
