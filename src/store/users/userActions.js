@@ -127,17 +127,24 @@ export const logoutAsync = () => {
   };
 };
 
-export const updateUserAccount = (user, username) => async dispatch => {
+export const updateUserName = (user, displayName) => async dispatch => {
   try {
     const userRef = doc(firestore, 'users', user.uid);
 
     await updateDoc(userRef, {
-      displayName: username,
+      displayName,
     });
 
-    await updateProfile(auth.currentUser, {
-      displayName: username,
-    });
+    updateProfile(auth.currentUser, {
+      displayName,
+    })
+      .then(() => {
+        window.location.reload();
+        v;
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
     const docSnap = await getDoc(userRef);
     const userUpdated = docSnap.data();

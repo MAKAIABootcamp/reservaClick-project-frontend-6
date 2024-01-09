@@ -11,6 +11,7 @@ import {
   EditableInput,
   Flex,
   ButtonGroup,
+  Text,
 } from '@chakra-ui/react';
 
 import { FaEdit } from 'react-icons/fa';
@@ -19,7 +20,7 @@ import { FaWindowClose } from 'react-icons/fa';
 import {
   deleteUserAccount,
   logoutAsync,
-  updateUserAccount,
+  updateUserName,
 } from '../../store/users/userActions';
 import Swal from 'sweetalert2';
 
@@ -33,19 +34,6 @@ import { sweetAlert } from '../../utils/alerts';
 const UserProfile = () => {
   const { user } = useSelector(store => store.user);
   const dispatch = useDispatch();
-  const [username, setUsername] = useState(user.displayName);
-
-  /*   const getData = async () => {
-    const docRef = doc(firestore, 'users', user.uid);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      console.log('Document data:', docSnap.data());
-    } else {
-      console.log('No such document!');
-    }
-  };
-  getData(); */
 
   function EditableControls() {
     const {
@@ -89,8 +77,8 @@ const UserProfile = () => {
     });
   };
 
-  const handleUpdateName = newUsername => {
-    dispatch(updateUserAccount(user, newUsername));
+  const handleUpdateName = displayName => {
+    dispatch(updateUserName(user, displayName));
   };
 
   return (
@@ -106,19 +94,21 @@ const UserProfile = () => {
         borderRadius='full'
       />
       <br />
+      <Text>Nombre de usuario</Text>
       <Editable
         className='main_container__editable'
         textAlign='center'
-        defaultValue={username}
+        defaultValue={user.displayName}
         fontSize={['20px', '25px']}
         isPreviewFocusable={false}
-        onSubmit={newUsername => handleUpdateName(newUsername)}
+        onSubmit={displayName => handleUpdateName(displayName)}
       >
         <EditablePreview />
         <Input as={EditableInput} />
         <EditableControls />
       </Editable>
       <br />
+      <Text>Correo electrónico</Text>
       <Editable
         textAlign='center'
         defaultValue={user.email}
@@ -127,7 +117,7 @@ const UserProfile = () => {
       >
         <EditablePreview />
         <Input as={EditableInput} />
-        <EditableControls />
+        {/* <EditableControls /> */}
       </Editable>
       <br />
       <Button
