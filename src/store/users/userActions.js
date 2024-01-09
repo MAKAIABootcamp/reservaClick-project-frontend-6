@@ -90,6 +90,18 @@ export const loginWithGoogle = () => async dispatch => {
     console.log(userCredential);
     dispatch(setIsAuthenticated(true));
     dispatch(setUser(userCredential.user));
+
+    const docRef = doc(firestore, 'users', userCredential.user.uid);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      await createUserInCollection(userCredential.user.uid, {
+        displayName: userCredential.user.displayName,
+        email: userCredential.user.email,
+        photoURL: userCredential.user.photoURL,
+        accessToken: userCredential.user.accessToken,
+      });
+    }
   } catch (error) {
     console.log(error);
     dispatch(setIsAuthenticated(false));
