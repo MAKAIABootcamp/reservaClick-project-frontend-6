@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Heading,
   Image,
@@ -16,39 +16,36 @@ import {
 import { FaEdit } from 'react-icons/fa';
 import { FaCheck } from 'react-icons/fa';
 import { FaWindowClose } from 'react-icons/fa';
-import { deleteUserAccount, logoutAsync } from '../../store/users/userActions';
+import {
+  deleteUserAccount,
+  logoutAsync,
+  updateUserAccount,
+} from '../../store/users/userActions';
 import Swal from 'sweetalert2';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { auth, firestore } from '../../firebase/firebaseConfig';
-import { doc, getDoc, deleteDoc } from 'firebase/firestore';
-import { deleteUser } from 'firebase/auth';
-
-import {
-  setError,
-  setIsAuthenticated,
-  setUser,
-} from '../../store/users/userSlice';
+import { firestore } from '../../firebase/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 
 import './userProfile.scss';
 import { sweetAlert } from '../../utils/alerts';
 
 const UserProfile = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector(store => store.user);
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState(user.displayName);
 
-  const getData = async () => {
+  /*   const getData = async () => {
     const docRef = doc(firestore, 'users', user.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       console.log('Document data:', docSnap.data());
     } else {
-      // docSnap.data() will be undefined in this case
       console.log('No such document!');
     }
   };
-  getData();
+  getData(); */
 
   function EditableControls() {
     const {
@@ -92,6 +89,10 @@ const UserProfile = () => {
     });
   };
 
+  const handleUpdateName = newUsername => {
+    dispatch(updateUserAccount(user, newUsername));
+  };
+
   return (
     <main className='main_container'>
       <Heading as='h1' size='xl'>
@@ -108,12 +109,12 @@ const UserProfile = () => {
       <Editable
         className='main_container__editable'
         textAlign='center'
-        defaultValue={user.displayName}
+        defaultValue={username}
         fontSize={['20px', '25px']}
         isPreviewFocusable={false}
+        onSubmit={newUsername => handleUpdateName(newUsername)}
       >
         <EditablePreview />
-        {/* Here is the custom input */}
         <Input as={EditableInput} />
         <EditableControls />
       </Editable>
@@ -125,7 +126,6 @@ const UserProfile = () => {
         isPreviewFocusable={false}
       >
         <EditablePreview />
-        {/* Here is the custom input */}
         <Input as={EditableInput} />
         <EditableControls />
       </Editable>

@@ -12,7 +12,7 @@ import {
   deleteUser,
 } from 'firebase/auth';
 import { sweetAlert } from '../../utils/alerts';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 export const createAnAccountAsync = newUser => async dispatch => {
   try {
@@ -125,6 +125,39 @@ export const logoutAsync = () => {
       );
     }
   };
+};
+
+export const updateUserAccount = (user, username) => async dispatch => {
+  try {
+    const userRef = doc(firestore, 'users', user.uid);
+
+    await updateDoc(userRef, {
+      displayName: username,
+    });
+
+    await updateProfile(auth.currentUser, {
+      displayName: username,
+    });
+
+    const docSnap = await getDoc(userRef);
+    const userUpdated = docSnap.data();
+
+    dispatch(setIsAuthenticated(true));
+    dispatch(setError(false));
+    dispatch(
+      setUser({
+        uid: userUpdated.uid,
+        displayName: userUpdated.displayName,
+        email: userUpdated.email,
+        photoURL: userUpdated.photoURL,
+        accessToken: userUpdated.accessToken,
+      })
+    );
+  } catch (error) {
+    console.log(error);
+    dispatch(setIsAuthenticated(false));
+    setError({ error: true, code: error.code, message: error.message });
+  }
 };
 
 export const deleteUserAccount = user => async dispatch => {
