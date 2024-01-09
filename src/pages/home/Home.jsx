@@ -80,7 +80,7 @@ const Home = () => {
         </InputGroup>
       </form>
       <div className='main_container__card_container'>
-        <List>
+        <List className='list__container'>
           {empresas.map((item, index) => (
           <ListItem spacing={3} key={index} >
             <Card  onClick={handleClickCard} className='main_container__card_container__card' maxW='sm'>
