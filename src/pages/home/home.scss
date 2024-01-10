@@ -7,19 +7,27 @@
   align-items: center;
   text-align: center;
   margin-top: 3em;
-
+  
   &__card_container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin: 0 0 4em 0;
-
+    
     &__card {
       margin: 1em;
-
+      
       &:hover {
         cursor: pointer;
       }
     }
   }
+}
+.list__container{
+  @media (min-width: 592px){
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
 }
