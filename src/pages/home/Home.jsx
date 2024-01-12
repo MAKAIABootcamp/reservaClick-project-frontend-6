@@ -15,18 +15,15 @@ import { FaSearch } from 'react-icons/fa';
 import './home.scss';
 import { useNavigate } from 'react-router-dom';
 import { getStores } from '../../store/stores/storeActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Home = () => {
+  const { stores } = useSelector(store => store.store);
   const dispatch = useDispatch();
 
-  let stores = [];
-
   useEffect(() => {
-    stores = dispatch(getStores());
+    dispatch(getStores());
   }, []);
-
-  console.log(stores);
 
   const empresas = [
     {
@@ -83,7 +80,7 @@ const Home = () => {
       </form>
       <div className='main_container__card_container'>
         <List className='list__container'>
-          {empresas.map((item, index) => (
+          {stores.map((item, index) => (
             <ListItem spacing={3} key={index}>
               <Card
                 onClick={handleClickCard}
@@ -92,12 +89,15 @@ const Home = () => {
               >
                 <CardBody>
                   <Image
-                    src={item.img}
-                    alt='Barbaros'
+                    src={item.image}
+                    alt={item.name}
+                    w='14em'
+                    h='14em'
+                    // boxSize='250px'
+                    // objectFit='cover'
                     borderRadius='lg'
-                    maxW={{ sm: '14em' }}
                   />
-                  <p>{item.nombre}</p>
+                  <p>{item.name}</p>
                 </CardBody>
               </Card>
             </ListItem>
