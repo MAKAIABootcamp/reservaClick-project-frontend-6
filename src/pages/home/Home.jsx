@@ -1,67 +1,69 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Input,
-  Button,
-  Stack,
   Heading,
-  InputLeftElement,
   InputRightElement,
   InputGroup,
   Card,
   CardBody,
-  Text,
   Image,
   List,
   ListItem,
 } from '@chakra-ui/react';
 import { FaSearch } from 'react-icons/fa';
-import barbaros from '../../assets/img/barbaros.png';
-import dentalhealth from '../../assets/img/dentalhealth.png';
-import piel_de_angel from '../../assets/img/piel-de-angel.png';
-import spa_integral from '../../assets/img/spa-integral.png';
 
 import './home.scss';
 import { useNavigate } from 'react-router-dom';
+import { getStores } from '../../store/stores/storeActions';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  let stores = [];
+
+  useEffect(() => {
+    stores = dispatch(getStores());
+  }, []);
+
+  console.log(stores);
 
   const empresas = [
     {
-      "id": 1,
-      "nombre": "Barbaros",
-      "direccion": "Calle 123",
-      "telefono": "123-456-7890",
-      "img": "src/assets/img/barbaros.png"
+      id: 1,
+      nombre: 'Barbaros',
+      direccion: 'Calle 123',
+      telefono: '123-456-7890',
+      img: 'src/assets/img/barbaros.png',
     },
     {
-      "id": 2,
-      "nombre": "Piel de Ángel",
-      "direccion": "Avenida 456",
-      "telefono": "987-654-3210",
-      "img": "src/assets/img/piel-de-angel.png"
+      id: 2,
+      nombre: 'Piel de Ángel',
+      direccion: 'Avenida 456',
+      telefono: '987-654-3210',
+      img: 'src/assets/img/piel-de-angel.png',
     },
     {
-      "id": 3,
-      "nombre": "Dental Health",
-      "direccion": "Avenida 456",
-      "telefono": "987-654-3210",
-      "img": "src/assets/img/dentalhealth.png"
+      id: 3,
+      nombre: 'Dental Health',
+      direccion: 'Avenida 456',
+      telefono: '987-654-3210',
+      img: 'src/assets/img/dentalhealth.png',
     },
     {
-      "id": 4,
-      "nombre": "Spa Integral",
-      "direccion": "Avenida 456",
-      "telefono": "987-654-3210",
-      "img": "src/assets/img/spa-integral.png"
-    }
+      id: 4,
+      nombre: 'Spa Integral',
+      direccion: 'Avenida 456',
+      telefono: '987-654-3210',
+      img: 'src/assets/img/spa-integral.png',
+    },
   ];
 
   const navigate = useNavigate();
 
-  const handleClickCard  = () => {
+  const handleClickCard = () => {
     navigate('/calendar');
-
-  }
+  };
 
   return (
     <main className='main_container'>
@@ -82,22 +84,26 @@ const Home = () => {
       <div className='main_container__card_container'>
         <List className='list__container'>
           {empresas.map((item, index) => (
-          <ListItem spacing={3} key={index} >
-            <Card  onClick={handleClickCard} className='main_container__card_container__card' maxW='sm'>
-              <CardBody>
-                <Image
-                  src={item.img}
-                  alt='Barbaros'
-                  borderRadius='lg'
-                  maxW={{ sm: '14em' }}
-                />
-                <p>{item.nombre}</p>
-              </CardBody>
-            </Card>
-          </ListItem>
+            <ListItem spacing={3} key={index}>
+              <Card
+                onClick={handleClickCard}
+                className='main_container__card_container__card'
+                maxW='sm'
+              >
+                <CardBody>
+                  <Image
+                    src={item.img}
+                    alt='Barbaros'
+                    borderRadius='lg'
+                    maxW={{ sm: '14em' }}
+                  />
+                  <p>{item.nombre}</p>
+                </CardBody>
+              </Card>
+            </ListItem>
           ))}
         </List>
-{/*         <Card className='main_container__card_container__card' maxW='sm'>
+        {/*         <Card className='main_container__card_container__card' maxW='sm'>
           <CardBody>
             <Image
               src={piel_de_angel}

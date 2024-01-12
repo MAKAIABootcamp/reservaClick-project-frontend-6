@@ -12,7 +12,14 @@ import {
   deleteUser,
 } from 'firebase/auth';
 import { sweetAlert } from '../../utils/alerts';
-import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  collection,
+  getDocs,
+} from 'firebase/firestore';
 
 export const createAnAccountAsync = newUser => async dispatch => {
   try {
