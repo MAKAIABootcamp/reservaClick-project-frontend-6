@@ -3,8 +3,11 @@ import { Box, Grid, Button, Text, ButtonGroup } from '@chakra-ui/react';
 import { format, addDays } from 'date-fns';
 import { Heading } from '@chakra-ui/react';
 import './calendar.scss';
+import { useParams } from 'react-router-dom';
 
 const Calendar = () => {
+  const { storeName } = useParams();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
 
@@ -82,7 +85,7 @@ const Calendar = () => {
   return (
     <Box p={4} className='calendar'>
       <Heading as='h2' size='xl' display={'flex'} justifyContent={'center'}>
-        Reserva tu cita
+        {`Reserva tu cita en ${storeName.replaceAll('-', ' ')}`}
       </Heading>
       <Text fontSize='xl' mb={4}>
         {format(selectedDate, 'MMMM yyyy')}

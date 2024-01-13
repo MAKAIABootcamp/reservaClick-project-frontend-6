@@ -54,9 +54,10 @@ const AppRouter = () => {
         <Routes>
           <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
             <Route element={<Layout />}>
+              <Route index element={<Home />} />
               <Route path='/home' element={<Home />} />
+              <Route path='home/:storeName/calendar' element={<Calendar />} />
               <Route path='/profile' element={<UserProfile />} />
-              <Route path='/calendar' element={<Calendar />} />
               <Route path='/reservation' element={<Reservation />} />
             </Route>
           </Route>

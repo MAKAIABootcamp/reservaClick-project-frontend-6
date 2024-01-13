@@ -129,14 +129,14 @@ const Login = () => {
         >
           Iniciar sesión con Google
         </Button>
-        <Button
+        {/* <Button
           rightIcon={<FaFacebook />}
           colorScheme='teal'
           variant='outline'
           onClick={() => handleLoginWithFacebook()}
         >
           Iniciar sesión con Facebok
-        </Button>
+        </Button> */}
         {/* <Button
           rightIcon={<MdOutlinePhoneAndroid />}
           colorScheme='teal'

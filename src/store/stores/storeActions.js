@@ -25,3 +25,15 @@ export const getStores = () => async dispatch => {
     );
   }
 };
+
+export const setStore = store => async dispatch => {
+  try {
+    dispatch(setSelectedStore(store));
+    setError(false);
+  } catch (error) {
+    console.warn(error);
+    dispatch(
+      setError({ error: true, code: error.code, message: error.message })
+    );
+  }
+};
