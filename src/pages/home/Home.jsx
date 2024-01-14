@@ -44,7 +44,7 @@ const Home = () => {
             variant='filled'
             placeholder='Busca un establecimiento...'
             onChange={event => setSearch(event.target.value)}
-            w={[300, 400, 500]}
+            w={[300, 400, 500, 700, 900]}
           />
           <InputRightElement>
             <FaSearch />
@@ -65,6 +65,8 @@ const Home = () => {
                   onClick={() => navigateToCalendar(item)}
                   className='main_container__card_container__card'
                   maxW='sm'
+                  boxShadow='lg'
+                  backgroundColor={'#E0FFFF'}
                 >
                   <CardBody>
                     <Image

@@ -142,3 +142,33 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+
+/* 
+
+import React from 'react';
+import { Box, Flex, Avatar, Text, Button, Heading } from '@chakra-ui/react';
+
+const UserProfile = ({ username, email, profileImageUrl }) => {
+  return (
+    <Flex align="center" justify="center" height="100vh">
+      <Box width="400px" p={4} borderWidth="1px" borderRadius="lg" boxShadow="lg">
+        <Flex align="center">
+          <Box mr={4}>
+            <Avatar src={profileImageUrl} size="lg" />
+          </Box>
+          <Box>
+            <Heading as="h2" size="md">
+              {username}
+            </Heading>
+            <Text color="gray.500">{email}</Text>
+            <Button size="sm" colorScheme="teal" mt={2}>
+              Edit
+            </Button>
+          </Box>
+        </Flex>
+      </Box>
+    </Flex>
+  );
+};
+
+export default UserProfile;*/
