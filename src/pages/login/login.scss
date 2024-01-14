@@ -1,0 +1,18 @@
+@import '../../variables';
+
+.main_login_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    margin: 2em 0 2em 0;
+  }
+
+  p {
+    color: $blue-link;
+  }
+}

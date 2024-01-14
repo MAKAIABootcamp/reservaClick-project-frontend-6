@@ -18,12 +18,10 @@ import {
   InputGroup,
   FormControl,
   FormErrorMessage,
-  FormLabel,
 } from '@chakra-ui/react';
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { FaGoogle } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
-// import { MdOutlinePhoneAndroid } from 'react-icons/md';
 import { MdEmail } from 'react-icons/md';
 import { RiLockPasswordFill } from 'react-icons/ri';
 
@@ -67,10 +65,12 @@ const Login = () => {
   };
 
   return (
-    <main className='main_container'>
-      <br />
-      <Heading>Inicio de sesión</Heading>
-      <form className='main_container__form' onSubmit={formik.handleSubmit}>
+    <main className='main_login_container'>
+      <Heading>Inicia sesión</Heading>
+      <form
+        className='main_login_container__form'
+        onSubmit={formik.handleSubmit}
+      >
         <Stack spacing={5}>
           <FormControl isInvalid={formik.errors.email}>
             <InputGroup>
