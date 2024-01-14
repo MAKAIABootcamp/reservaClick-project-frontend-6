@@ -82,31 +82,31 @@ const UserProfile = () => {
   };
 
   return (
-    <main className='main_container'>
+    <main className='main_container__profile'>
       <Heading as='h1' size='xl'>
         Perfil de usuario
       </Heading>
       <br />
-      <Image
+      <Image className='main_container__profile__avatar'
         src={user.photoURL}
         alt='user profile'
-        boxSize='8em'
-        borderRadius='full'
       />
       <br />
       <Text>Nombre de usuario</Text>
-      <Editable
-        className='main_container__editable'
-        textAlign='center'
-        defaultValue={user.displayName}
-        fontSize={['20px', '25px']}
-        isPreviewFocusable={false}
-        onSubmit={displayName => handleUpdateName(displayName)}
-      >
-        <EditablePreview />
-        <Input as={EditableInput} />
-        <EditableControls />
-      </Editable>
+      <div className='div__editor'>
+        <Editable
+          className='main_container__profile__editable'
+          textAlign='center'
+          defaultValue={user.displayName}
+          fontSize={['20px', '25px']}
+          isPreviewFocusable={false}
+          onSubmit={displayName => handleUpdateName(displayName)}
+        >
+          <EditablePreview />
+          <Input as={EditableInput} />
+          <EditableControls />
+        </Editable>
+      </div>
       <br />
       <Text>Correo electrónico</Text>
       <Editable
