@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Input,
   Heading,
@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const Home = () => {
   const { stores } = useSelector(store => store.store);
   const dispatch = useDispatch();
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     dispatch(getStores());
@@ -42,6 +43,7 @@ const Home = () => {
             type='text'
             variant='filled'
             placeholder='Busca un establecimiento...'
+            onChange={event => setSearch(event.target.value)}
             w={[300, 400, 500]}
           />
           <InputRightElement>
@@ -51,26 +53,32 @@ const Home = () => {
       </form>
       <div className='main_container__card_container'>
         <List className='list__container'>
-          {stores.map((item, index) => (
-            <ListItem spacing={3} key={index}>
-              <Card
-                onClick={() => navigateToCalendar(item)}
-                className='main_container__card_container__card'
-                maxW='sm'
-              >
-                <CardBody>
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    w='14em'
-                    h='14em'
-                    borderRadius='lg'
-                  />
-                  <p>{item.name}</p>
-                </CardBody>
-              </Card>
-            </ListItem>
-          ))}
+          {stores
+            .filter(item =>
+              search.toLocaleLowerCase() === ''
+                ? item
+                : item.name.toLocaleLowerCase().includes(search)
+            )
+            .map((item, index) => (
+              <ListItem spacing={3} key={index}>
+                <Card
+                  onClick={() => navigateToCalendar(item)}
+                  className='main_container__card_container__card'
+                  maxW='sm'
+                >
+                  <CardBody>
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      w='14em'
+                      h='14em'
+                      borderRadius='lg'
+                    />
+                    <p>{item.name}</p>
+                  </CardBody>
+                </Card>
+              </ListItem>
+            ))}
         </List>
       </div>
     </main>
