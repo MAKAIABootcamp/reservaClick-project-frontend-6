@@ -45,6 +45,7 @@ const Home = () => {
             type='text'
             variant='filled'
             placeholder='Busca un establecimiento...'
+            focusBorderColor='#87CEEB'
             onChange={event => setSearch(event.target.value)}
             w={[300, 400, 500, 700, 900]}
           />
@@ -69,7 +70,7 @@ const Home = () => {
                   className='main_home_container__card_container__card'
                   maxW='sm'
                   boxShadow='lg'
-                  backgroundColor={'#E0FFFF'}
+                  backgroundColor={'#b0e0e6'}
                 >
                   <CardBody>
                     <Image

@@ -86,10 +86,14 @@ const Login = () => {
                   placeholder='Correo electrónico'
                   onChange={formik.handleChange}
                   value={formik.values.email}
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                   w={[300, 400, 500]}
                 />
               </InputGroup>
-              <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+              <FormErrorMessage color='#FF6666'>
+                {formik.errors.email}
+              </FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={formik.errors.password}>
               <InputGroup>
@@ -101,6 +105,8 @@ const Login = () => {
                   name='password'
                   variant='filled'
                   placeholder='Contraseña'
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
@@ -110,9 +116,11 @@ const Login = () => {
                   </span>
                 </InputRightElement>
               </InputGroup>
-              <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+              <FormErrorMessage color='#FF6666'>
+                {formik.errors.password}
+              </FormErrorMessage>
             </FormControl>
-            <Button type='submit' colorScheme='blue'>
+            <Button type='submit' bg='#B0E0E6' _hover={{ bg: '#87CEEB' }}>
               Iniciar Sesión
             </Button>
           </Stack>

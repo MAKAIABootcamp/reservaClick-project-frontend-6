@@ -90,6 +90,8 @@ const Register = () => {
                   name='name'
                   variant='filled'
                   placeholder='Nombre y apellido'
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                   onChange={formik.handleChange}
                   value={formik.values.name}
                   w={[300, 400, 500]}
@@ -107,6 +109,8 @@ const Register = () => {
                   name='email'
                   variant='filled'
                   placeholder='Correo electrónico'
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                   onChange={formik.handleChange}
                   value={formik.values.email}
                 />
@@ -123,6 +127,8 @@ const Register = () => {
                   name='password'
                   variant='filled'
                   placeholder='Contraseña'
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
@@ -146,6 +152,8 @@ const Register = () => {
                   placeholder='Confirmar contraseña'
                   onChange={formik.handleChange}
                   value={formik.values.confirmPassword}
+                  focusBorderColor='#87CEEB'
+                  errorBorderColor='#FF6666'
                 />
                 <InputRightElement width='4rem'>
                   <span onClick={handleClickShowPasswordConfirmation}>
@@ -176,7 +184,8 @@ const Register = () => {
 
             <Button
               type='submit'
-              colorScheme='blue'
+              bg='#B0E0E6'
+              _hover={{ bg: '#87CEEB' }}
               isDisabled={!file ? true : false}
             >
               Registrarse

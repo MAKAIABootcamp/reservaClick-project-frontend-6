@@ -14,7 +14,7 @@
     justify-content: space-around;
     padding: 1em;
     border-radius: 2em 2em 0 0;
-    background-color: lightcyan;
+    background-color: $blue;
 
     &__icon {
       width: 2.5em;
@@ -38,7 +38,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background-color: lightcyan;
+    background-color: $blue;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 
     &__link {
