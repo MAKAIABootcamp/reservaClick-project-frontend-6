@@ -35,9 +35,11 @@ const Home = () => {
   };
 
   return (
-    <main className='main_container'>
+    <main className='main_home_container'>
+      <br />
       <Heading size='xl'>!Bienvenido a ReservaClick¡</Heading>
-      <form className='main_container__form'>
+      <br />
+      <form className='main_home_container__form'>
         <InputGroup>
           <Input
             type='text'
@@ -51,7 +53,8 @@ const Home = () => {
           </InputRightElement>
         </InputGroup>
       </form>
-      <div className='main_container__card_container'>
+      <br />
+      <div className='main_home_container__card_container'>
         <List className='list__container'>
           {stores
             .filter(item =>
@@ -63,7 +66,7 @@ const Home = () => {
               <ListItem spacing={3} key={index}>
                 <Card
                   onClick={() => navigateToCalendar(item)}
-                  className='main_container__card_container__card'
+                  className='main_home_container__card_container__card'
                   maxW='sm'
                   boxShadow='lg'
                   backgroundColor={'#E0FFFF'}
