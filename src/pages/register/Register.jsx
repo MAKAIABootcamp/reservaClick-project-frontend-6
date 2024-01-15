@@ -16,6 +16,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  Flex,
 } from '@chakra-ui/react';
 import { FaUser, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
@@ -71,114 +72,121 @@ const Register = () => {
   });
 
   return (
-    <main className='main_container'>
-      <Heading>Crea tu cuenta</Heading>
-      <form className='main_container__form' onSubmit={formik.handleSubmit}>
-        <Stack spacing={5}>
-          <FormControl isInvalid={formik.errors.name}>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <FaUser />
-              </InputLeftElement>
-              <Input
-                type='text'
-                name='name'
-                variant='filled'
-                placeholder='Nombre y apellido'
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                w={[300, 400, 500]}
-              />
-            </InputGroup>
-            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
-          </FormControl>
-          <FormControl isInvalid={formik.errors.email}>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <MdEmail />
-              </InputLeftElement>
-              <Input
-                type='email'
-                name='email'
-                variant='filled'
-                placeholder='Correo electrónico'
-                onChange={formik.handleChange}
-                value={formik.values.email}
-              />
-            </InputGroup>
-            <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
-          </FormControl>
-          <FormControl isInvalid={formik.errors.password}>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <RiLockPasswordFill />
-              </InputLeftElement>
-              <Input
-                type={showPassword[0] ? 'text' : 'password'}
-                name='password'
-                variant='filled'
-                placeholder='Contraseña'
-                onChange={formik.handleChange}
-                value={formik.values.password}
-              />
-              <InputRightElement width='4rem'>
-                <span onClick={handleClickShowPassword}>
-                  {showPassword[0] ? <FaRegEye /> : <FaRegEyeSlash />}
-                </span>
-              </InputRightElement>
-            </InputGroup>
-            <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
-          </FormControl>
-          <FormControl isInvalid={formik.errors.confirmPassword}>
-            <InputGroup>
-              <InputLeftElement pointerEvents='none'>
-                <RiLockPasswordFill />
-              </InputLeftElement>
-              <Input
-                type={showPassword[1] ? 'text' : 'password'}
-                name='confirmPassword'
-                variant='filled'
-                placeholder='Confirmar contraseña'
-                onChange={formik.handleChange}
-                value={formik.values.confirmPassword}
-              />
-              <InputRightElement width='4rem'>
-                <span onClick={handleClickShowPasswordConfirmation}>
-                  {showPassword[1] ? <FaRegEye /> : <FaRegEyeSlash />}
-                </span>
-              </InputRightElement>
-            </InputGroup>
-            <FormErrorMessage>{formik.errors.confirmPassword}</FormErrorMessage>
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor='file' className='fileText'>
-              Foto de perfil
-              <img src={cameraIcon} alt='cameraIcon' className='cameraIcon' />
-              <input
-                id='file'
-                name='file'
-                type='file'
-                onChange={event => {
-                  const file = event.target.files[0];
-                  setFile(file);
-                }}
-              />
-              <span id='imageName'>{file?.name || ''}</span>
-            </FormLabel>
-          </FormControl>
+    <main className='main_register_container'>
+      <Flex direction='column' align='center' justify='center' height='100vh'>
+        <Heading>Crea tu cuenta</Heading>
+        <form
+          className='main_register_container__form'
+          onSubmit={formik.handleSubmit}
+        >
+          <Stack spacing={5}>
+            <FormControl isInvalid={formik.errors.name}>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <FaUser />
+                </InputLeftElement>
+                <Input
+                  type='text'
+                  name='name'
+                  variant='filled'
+                  placeholder='Nombre y apellido'
+                  onChange={formik.handleChange}
+                  value={formik.values.name}
+                  w={[300, 400, 500]}
+                />
+              </InputGroup>
+              <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={formik.errors.email}>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <MdEmail />
+                </InputLeftElement>
+                <Input
+                  type='email'
+                  name='email'
+                  variant='filled'
+                  placeholder='Correo electrónico'
+                  onChange={formik.handleChange}
+                  value={formik.values.email}
+                />
+              </InputGroup>
+              <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={formik.errors.password}>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <RiLockPasswordFill />
+                </InputLeftElement>
+                <Input
+                  type={showPassword[0] ? 'text' : 'password'}
+                  name='password'
+                  variant='filled'
+                  placeholder='Contraseña'
+                  onChange={formik.handleChange}
+                  value={formik.values.password}
+                />
+                <InputRightElement width='4rem'>
+                  <span onClick={handleClickShowPassword}>
+                    {showPassword[0] ? <FaRegEye /> : <FaRegEyeSlash />}
+                  </span>
+                </InputRightElement>
+              </InputGroup>
+              <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
+            </FormControl>
+            <FormControl isInvalid={formik.errors.confirmPassword}>
+              <InputGroup>
+                <InputLeftElement pointerEvents='none'>
+                  <RiLockPasswordFill />
+                </InputLeftElement>
+                <Input
+                  type={showPassword[1] ? 'text' : 'password'}
+                  name='confirmPassword'
+                  variant='filled'
+                  placeholder='Confirmar contraseña'
+                  onChange={formik.handleChange}
+                  value={formik.values.confirmPassword}
+                />
+                <InputRightElement width='4rem'>
+                  <span onClick={handleClickShowPasswordConfirmation}>
+                    {showPassword[1] ? <FaRegEye /> : <FaRegEyeSlash />}
+                  </span>
+                </InputRightElement>
+              </InputGroup>
+              <FormErrorMessage>
+                {formik.errors.confirmPassword}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl>
+              <FormLabel htmlFor='file' className='fileText'>
+                Foto de perfil
+                <img src={cameraIcon} alt='cameraIcon' className='cameraIcon' />
+                <input
+                  id='file'
+                  name='file'
+                  type='file'
+                  onChange={event => {
+                    const file = event.target.files[0];
+                    setFile(file);
+                  }}
+                />
+                <span id='imageName'>{file?.name || ''}</span>
+              </FormLabel>
+            </FormControl>
 
-          <Button
-            type='submit'
-            colorScheme='blue'
-            isDisabled={!file ? true : false}
-          >
-            Registrarse
-          </Button>
-        </Stack>
-      </form>
-      <p>
-        <Link to='/login'>Ya tengo una cuenta</Link>
-      </p>
+            <Button
+              type='submit'
+              colorScheme='blue'
+              isDisabled={!file ? true : false}
+            >
+              Registrarse
+            </Button>
+          </Stack>
+        </form>
+        <p>
+          <Link to='/login'>Ya tengo una cuenta</Link>
+        </p>
+      </Flex>
     </main>
   );
 };
