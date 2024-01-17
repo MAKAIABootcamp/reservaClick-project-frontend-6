@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Grid,
@@ -13,16 +13,28 @@ import es from 'date-fns/locale/es';
 import { useNavigate, useParams } from 'react-router-dom';
 import './calendar.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { setStore } from '../../store/stores/storeActions';
+import { getStores, setStore } from '../../store/stores/storeActions';
+import {
+  createReservation,
+  getReservations,
+} from '../../store/reservations/reservationActions';
 
 const Calendar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { storeName } = useParams();
+  let { storeName } = useParams();
+  storeName = storeName.replaceAll('-', ' ');
   const { user } = useSelector(store => store.user);
+  const { stores } = useSelector(store => store.store);
+  const { reservations } = useSelector(store => store.reservation);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
+  const [hourNotAvailable, setHourNotAvailable] = useState(false);
+
+  useEffect(() => {
+    dispatch(getStores());
+  }, []);
 
   const handleDateChange = newDate => {
     setSelectedDate(newDate);
@@ -34,18 +46,37 @@ const Calendar = () => {
     setSelectedHour(hour);
     if (!availability) {
       console.log('Esta horario NO esta disponible');
+      setHourNotAvailable(true);
     } else {
       selectedDate.setHours(hour.split(':').shift());
       console.log(selectedDate);
+      setHourNotAvailable(false);
     }
   };
 
   const handleConfirmReservation = () => {
-    console.log('-----------------------------');
-    console.log('Reserva exitosa!');
-    console.log(storeName.replaceAll('-', ' '));
-    console.log(user.displayName);
-    console.log(selectedDate);
+    if (!hourNotAvailable) {
+      console.log('-----------------------------');
+      console.log('Reserva exitosa!');
+      console.log(storeName.replaceAll('-', ' '));
+      console.log(user.displayName);
+      console.log(selectedDate);
+      dispatch(getReservations());
+
+      const storeId = stores.filter(store => store.name == storeName)[0]?.id;
+
+      const reservation = {
+        userId: user.uid,
+        storeId: storeId,
+        creationDate: new Date(),
+        reservationDate: selectedDate,
+        reservationHour: selectedHour,
+      };
+
+      dispatch(createReservation(reservation, user.uid));
+    } else {
+      console.log('Lo sentimos, este horario no esta disponible');
+    }
   };
 
   const handleCancel = () => {
@@ -68,6 +99,23 @@ const Calendar = () => {
   const noAvailability = Object.values(schedule).every(
     value => value === false
   );
+
+  const handlePrevMonth = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear();
+
+    if (
+      subMonths(selectedDate, 1).getFullYear() == currentYear &&
+      subMonths(selectedDate, 1).getMonth() + 1 >= currentMonth
+    ) {
+      setSelectedDate(subMonths(selectedDate, 1));
+    }
+  };
+
+  const handleNextMonth = () => {
+    setSelectedDate(addMonths(selectedDate, 1));
+  };
 
   const renderCalendar = () => {
     const daysInMonth = [];
@@ -132,23 +180,6 @@ const Calendar = () => {
         ))}
       </Grid>
     );
-  };
-
-  const handlePrevMonth = () => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentYear = currentDate.getFullYear();
-
-    if (
-      subMonths(selectedDate, 1).getFullYear() == currentYear &&
-      subMonths(selectedDate, 1).getMonth() + 1 >= currentMonth
-    ) {
-      setSelectedDate(subMonths(selectedDate, 1));
-    }
-  };
-
-  const handleNextMonth = () => {
-    setSelectedDate(addMonths(selectedDate, 1));
   };
 
   return (
