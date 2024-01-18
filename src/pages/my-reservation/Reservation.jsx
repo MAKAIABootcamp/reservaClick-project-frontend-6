@@ -1,72 +1,95 @@
-import React from 'react';
-import { Button, Heading, Box } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+import {
+  Button,
+  Heading,
+  Box,
+  ListItem,
+  List,
+  Flex,
+  Text,
+  Divider,
+} from '@chakra-ui/react';
+import { getReservations } from '../../store/reservations/reservationActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getStores } from '../../store/stores/storeActions';
 import './reservation.scss';
 
-const Reserva = ({ local, fecha, hora, onEditar, onCancelar }) => (
-  <section className='section_container'>
-    <Heading as='h3' size='lg'>
-      {local}
-    </Heading>
-    <Heading as='h3' size='md'>
-      {fecha}
-    </Heading>
-    <Heading as='h3' size='sm'>
-      {hora}
-    </Heading>
-    <Box textAlign='center'>
-      <Button
-        bg='transparent'
-        color='green.500'
-        borderColor='green.500'
-        _hover={{ bg: 'green.500', color: 'white' }}
-        onClick={onEditar}
-      >
-        Editar
-      </Button>
-      <Button
-        bg='transparent'
-        color='red.500'
-        borderColor='red.500'
-        _hover={{ bg: 'red.500', color: 'white' }}
-        onClick={onCancelar}
-      >
-        Cancelar
-      </Button>
+const Reserva = ({ store, date, hour, onEdit, onCancel }) => {
+  let options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+
+  return (
+    <Box borderWidth='1px' borderRadius='lg' p='4' m='2' w='300px'>
+      <Heading as='h3' size='lg' mb='2'>
+        {store}
+      </Heading>
+      <Divider />
+      <br />
+      <Text mb='2'>{date.toLocaleDateString('es-ES', options)}</Text>
+      <Text mb='4'>{`${hour} - ${String(parseInt(hour) + 1)}:00`}</Text>
+      <Flex justifyContent='space-between'>
+        <Button colorScheme='green' onClick={onEdit}>
+          Editar
+        </Button>
+        <Button colorScheme='red' onClick={onCancel}>
+          Cancelar
+        </Button>
+      </Flex>
     </Box>
-  </section>
-);
+  );
+};
 
 const Reservation = () => {
+  const dispatch = useDispatch();
+  const { user } = useSelector(store => store.user);
+  const { stores } = useSelector(store => store.store);
+  const { reservations } = useSelector(store => store.reservation);
+
+  useEffect(() => {
+    dispatch(getReservations());
+    dispatch(getStores());
+  }, []);
+
+  const myReservations = reservations.filter(
+    reservation => reservation.userId === user.uid
+  );
+
+  // console.log(myReservations[0]?.reservationDate);
+
+  const findStoreNameById = storeId => {
+    const store = stores.find(store => store.id === storeId);
+    return store ? store.name : 'Unknown Store';
+  };
+
+  const convertToDate = ({ seconds, nanoseconds }) =>
+    new Date(seconds * 1000 + nanoseconds / 1e6);
+
+  // console.log(convertToDate(myReservations[0]?.reservationDate));
+
   return (
     <main>
       <section className='section_reservas'>
         <Heading className='titulo'>Mis Reservas</Heading>
-        <Reserva
-          local='Barbaros'
-          fecha='2023-12-23 (sábado)'
-          hora='10:00 - 11:00 AM'
-          onEditar={() => console.log('Editar primera reserva')}
-          onCancelar={() => console.log('Cancelar primera reserva')}
-        />
-        <Box width='50%' height='1px' bg='white' mx='auto' my={-6} />
-
-        <Reserva
-          local='Pies de angel'
-          fecha='2023-12-25 (lunes)'
-          hora='1:00 - 2:00 PM'
-          onEditar={() => console.log('Editar segunda reserva')}
-          onCancelar={() => console.log('Cancelar segunda reserva')}
-        />
-        <Box width='60%' height='1px' bg='white' mx='auto' my={-6} />
-
-        <Reserva
-          local='Odontologia estetica'
-          fecha='2023-12-26 (Martes)'
-          hora='3:00 - 4:00 PM'
-          onEditar={() => console.log('Editar segunda reserva')}
-          onCancelar={() => console.log('Cancelar segunda reserva')}
-        />
-        <Box width='60%' height='1px' bg='white' mx='auto' my={-6} />
+        <br />
+        <Flex flexWrap='wrap' alignItems='center' justifyContent='center'>
+          {myReservations.map((myReservation, index) => (
+            <Reserva
+              key={index}
+              store={findStoreNameById(myReservation.storeId)}
+              date={convertToDate(myReservation.reservationDate)}
+              hour={myReservation.reservationHour}
+              onEdit={() => console.log('Editar primera reserva')}
+              onCancel={() => console.log('Cancelar primera reserva')}
+            />
+          ))}
+        </Flex>
+        <br />
+        <br />
+        <br />
       </section>
     </main>
   );
