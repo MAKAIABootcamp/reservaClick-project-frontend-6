@@ -246,6 +246,8 @@ const UserProfile = () => {
             </Flex>
           </Box>
         </Flex>
+        <br />
+        <br />
       </div>
     </>
   );

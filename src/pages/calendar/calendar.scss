@@ -3,3 +3,20 @@
     margin-top: 3em;
   }
 }
+
+/* body {
+  overflow: hidden;
+} */
+
+/* For WebKit browsers (Chrome, Safari) */
+body::-webkit-scrollbar {
+  width: 1px; /* Adjust the width as needed */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: transparent; /* Hide the thumb */
+}
+
+body::-webkit-scrollbar-track {
+  background-color: transparent; /* Hide the track */
+}

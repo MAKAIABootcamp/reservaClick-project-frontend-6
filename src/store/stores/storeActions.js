@@ -37,3 +37,26 @@ export const setStore = store => async dispatch => {
     );
   }
 };
+
+export const updateHourAvailability =
+  (store, hour, availability) => async dispatch => {
+    try {
+      const storeRef = doc(firestore, 'stores', store.uid);
+      console.log('storeRef:', storeRef);
+
+      const schedule = { ...store.schedule, [hour]: availability };
+      console.log('updatedSchedule:', schedule);
+
+      await updateDoc(storeRef, {
+        schedule,
+      });
+
+      dispatch(setSelectedStore(store));
+      setError(false);
+    } catch (error) {
+      console.warn(error);
+      dispatch(
+        setError({ error: true, code: error.code, message: error.message })
+      );
+    }
+  };

@@ -9,6 +9,8 @@ import {
   getDocs,
   setDoc,
   addDoc,
+  arrayUnion,
+  arrayRemove,
 } from 'firebase/firestore';
 
 export const getReservations = () => async dispatch => {

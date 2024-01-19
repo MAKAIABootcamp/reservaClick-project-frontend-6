@@ -11,15 +11,19 @@ import {
 import { format, addDays, addMonths, subMonths } from 'date-fns';
 import es from 'date-fns/locale/es';
 import { useNavigate, useParams } from 'react-router-dom';
-import './calendar.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { getStores, setStore } from '../../store/stores/storeActions';
+import {
+  getStores,
+  setStore,
+  updateHourAvailability,
+} from '../../store/stores/storeActions';
 import {
   createReservation,
   getReservations,
 } from '../../store/reservations/reservationActions';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import Swal from 'sweetalert2';
+import './calendar.scss';
 
 const Calendar = () => {
   const navigate = useNavigate();
@@ -27,12 +31,16 @@ const Calendar = () => {
   let { storeName } = useParams();
   storeName = storeName.replaceAll('-', ' ');
   const { user } = useSelector(store => store.user);
-  const { stores } = useSelector(store => store.store);
+  const { stores, selectedStore } = useSelector(store => store.store);
   const { reservations } = useSelector(store => store.reservation);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
   const [hourNotAvailable, setHourNotAvailable] = useState(false);
+
+  const reservationsForStore = reservations.filter(
+    reservation => reservation.storeId === selectedStore.id
+  );
 
   useEffect(() => {
     dispatch(getStores());
@@ -46,6 +54,7 @@ const Calendar = () => {
 
   const handleHourSelection = (hour, availability) => {
     setSelectedHour(hour);
+
     if (!availability) {
       console.log('Esta horario NO esta disponible');
       setHourNotAvailable(true);
@@ -69,7 +78,7 @@ const Calendar = () => {
     if (!hourNotAvailable) {
       Swal.fire({
         title: 'Reserva exitosa!',
-        text: `¡Tu reserva en ${storeName.replaceAll('-', ' ')} fue exitosa!`,
+        text: `¡Tu reserva en ${storeName} fue exitosa!`,
         icon: 'success',
         showCancelButton: false,
         confirmButtonText: 'Aceptar',
@@ -80,17 +89,18 @@ const Calendar = () => {
       });
       dispatch(getReservations());
 
-      const storeId = stores.filter(store => store.name == storeName)[0]?.id;
+      const store = stores.find(store => store.name == storeName);
 
       const reservation = {
         userId: user.uid,
-        storeId: storeId,
+        storeId: store.id,
         creationDate: new Date(),
         reservationDate: selectedDate,
         reservationHour: selectedHour,
       };
 
-      dispatch(createReservation(reservation, user.uid));
+      dispatch(updateHourAvailability(store, selectedHour, false));
+      // dispatch(createReservation(reservation, user.uid));
     } else {
       Swal.fire({
         title: 'Horario no disponible',
@@ -105,22 +115,6 @@ const Calendar = () => {
     navigate('/home');
     dispatch(setStore(null));
   };
-
-  const schedule = {
-    '08:00': true,
-    '09:00': false,
-    '10:00': true,
-    '11:00': false,
-    '12:00': true,
-    '14:00': false,
-    '15:00': true,
-    '16:00': false,
-    '17:00': true,
-  };
-
-  const noAvailability = Object.values(schedule).every(
-    value => value === false
-  );
 
   const handlePrevMonth = () => {
     const currentDate = new Date();
@@ -139,6 +133,9 @@ const Calendar = () => {
     setSelectedDate(addMonths(selectedDate, 1));
   };
 
+  const convertToDate = ({ seconds, nanoseconds }) =>
+    new Date(seconds * 1000 + nanoseconds / 1e6);
+
   const renderCalendar = () => {
     const daysInMonth = [];
     let currentDate = new Date(
@@ -148,7 +145,7 @@ const Calendar = () => {
     );
 
     const dayNames = [...Array(7)].map((_, index) =>
-      format(addDays(currentDate, index), 'EEEE', { locale: es })
+      format(addDays(currentDate, index), 'EEEE', { locale: es }).slice(0, 2)
     );
 
     while (currentDate.getMonth() === selectedDate.getMonth()) {
@@ -174,7 +171,8 @@ const Calendar = () => {
               variant={
                 day.getDate() === selectedDate.getDate() ? 'solid' : 'outline'
               }
-              colorScheme={noAvailability ? 'red' : 'teal'}
+              // colorScheme={noAvailability ? 'red' : 'teal'}
+              colorScheme='teal'
               onClick={() => handleDateChange(day)}
             >
               {format(day, 'dd')}
@@ -186,28 +184,58 @@ const Calendar = () => {
   };
 
   const renderHours = () => {
+    const schedule = selectedStore.schedule;
     const hours = Object.keys(schedule);
+
+    const sortedHours = hours.sort((a, b) => {
+      const [hoursA, minutesA] = a.split(':').map(Number);
+      const [hoursB, minutesB] = b.split(':').map(Number);
+
+      if (hoursA === hoursB) {
+        return minutesA - minutesB;
+      }
+
+      return hoursA - hoursB;
+    });
 
     return (
       <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={4}>
-        {hours.map(hour => (
-          <Button
-            key={hour}
-            variant={hour === selectedHour ? 'solid' : 'outline'}
-            colorScheme={schedule[hour] ? 'teal' : 'red'}
-            onClick={() => handleHourSelection(hour, schedule[hour])}
-          >
-            {hour}
-          </Button>
-        ))}
+        {hours.map(hour => {
+          const isThisHourNotAvailable = reservationsForStore.some(
+            reservation =>
+              `${selectedDate}${hour}` ===
+              `${convertToDate(reservation.reservationDate)}${
+                reservation.reservationHour
+              }`
+          );
+          return (
+            <Button
+              isDisabled={isThisHourNotAvailable}
+              key={hour}
+              variant={hour === selectedHour ? 'solid' : 'outline'}
+              colorScheme={schedule[hour] ? 'teal' : 'red'}
+              onClick={() => handleHourSelection(hour, schedule[hour])}
+              // colorScheme='teal'
+              // onClick={() => handleHourSelection(hour)}
+            >
+              {hour}
+            </Button>
+          );
+        })}
       </Grid>
     );
   };
 
   return (
     <Box p={4} className='calendar'>
-      <Heading as='h2' size='xl' display={'flex'} justifyContent={'center'}>
-        {`Reserva tu cita en ${storeName.replaceAll('-', ' ')}`}
+      <Heading
+        as='h2'
+        size='xl'
+        display={'flex'}
+        justifyContent={'center'}
+        textAlign='center'
+      >
+        {`Reserva tu cita en ${storeName}`}
       </Heading>
       <br />
       <Flex p={4} justifyContent={'space-between'}>
@@ -247,6 +275,7 @@ const Calendar = () => {
           Cancelar
         </Button>
       </ButtonGroup>
+      <br />
       <br />
       <br />
     </Box>
