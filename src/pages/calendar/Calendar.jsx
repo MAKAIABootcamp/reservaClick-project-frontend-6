@@ -30,19 +30,20 @@ const Calendar = () => {
   const dispatch = useDispatch();
   let { storeName } = useParams();
   storeName = storeName.replaceAll('-', ' ');
+
   const { user } = useSelector(store => store.user);
   const { stores, selectedStore } = useSelector(store => store.store);
   const { reservations } = useSelector(store => store.reservation);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedHour, setSelectedHour] = useState(null);
-  const [hourNotAvailable, setHourNotAvailable] = useState(false);
 
   const reservationsForStore = reservations.filter(
     reservation => reservation.storeId === selectedStore.id
   );
 
   useEffect(() => {
+    dispatch(getReservations());
     dispatch(getStores());
   }, []);
 
@@ -52,17 +53,9 @@ const Calendar = () => {
     setSelectedHour(null);
   };
 
-  const handleHourSelection = (hour, availability) => {
+  const handleHourSelection = hour => {
     setSelectedHour(hour);
-
-    if (!availability) {
-      console.log('Esta horario NO esta disponible');
-      setHourNotAvailable(true);
-    } else {
-      selectedDate.setHours(hour.split(':').shift());
-      console.log(selectedDate);
-      setHourNotAvailable(false);
-    }
+    console.log(hour);
   };
 
   const handleConfirmReservation = () => {
@@ -74,21 +67,7 @@ const Calendar = () => {
         confirmButtonText: 'Aceptar',
       });
       return;
-    }
-    if (!hourNotAvailable) {
-      Swal.fire({
-        title: 'Reserva exitosa!',
-        text: `¡Tu reserva en ${storeName} fue exitosa!`,
-        icon: 'success',
-        showCancelButton: false,
-        confirmButtonText: 'Aceptar',
-      }).then(result => {
-        if (result.isConfirmed) {
-          navigate('/reservation');
-        }
-      });
-      dispatch(getReservations());
-
+    } else {
       const store = stores.find(store => store.name == storeName);
 
       const reservation = {
@@ -99,14 +78,19 @@ const Calendar = () => {
         reservationHour: selectedHour,
       };
 
-      dispatch(updateHourAvailability(store, selectedHour, false));
-      // dispatch(createReservation(reservation, user.uid));
-    } else {
+      // dispatch(updateHourAvailability(store, selectedHour, false));
+      dispatch(createReservation(reservation, user.uid));
+
       Swal.fire({
-        title: 'Horario no disponible',
-        text: 'Lo sentimos, este horario no está disponible',
-        icon: 'error',
+        title: 'Reserva exitosa!',
+        text: `¡Tu reserva en ${storeName} fue exitosa!`,
+        icon: 'success',
+        showCancelButton: false,
         confirmButtonText: 'Aceptar',
+      }).then(result => {
+        if (result.isConfirmed) {
+          navigate('/reservation');
+        }
       });
     }
   };
@@ -153,8 +137,6 @@ const Calendar = () => {
       currentDate = addDays(currentDate, 1);
     }
 
-    // daysInMonth.map(day => console.log(day));
-
     return (
       <>
         <Grid templateColumns='repeat(7, 1fr)' gap={2} mb={2}>
@@ -171,7 +153,6 @@ const Calendar = () => {
               variant={
                 day.getDate() === selectedDate.getDate() ? 'solid' : 'outline'
               }
-              // colorScheme={noAvailability ? 'red' : 'teal'}
               colorScheme='teal'
               onClick={() => handleDateChange(day)}
             >
@@ -200,7 +181,7 @@ const Calendar = () => {
 
     return (
       <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={4}>
-        {hours.map(hour => {
+        {sortedHours.map(hour => {
           const isThisHourNotAvailable = reservationsForStore.some(
             reservation =>
               `${selectedDate}${hour}` ===
@@ -213,10 +194,8 @@ const Calendar = () => {
               isDisabled={isThisHourNotAvailable}
               key={hour}
               variant={hour === selectedHour ? 'solid' : 'outline'}
-              colorScheme={schedule[hour] ? 'teal' : 'red'}
-              onClick={() => handleHourSelection(hour, schedule[hour])}
-              // colorScheme='teal'
-              // onClick={() => handleHourSelection(hour)}
+              colorScheme={isThisHourNotAvailable ? 'red' : 'teal'}
+              onClick={() => handleHourSelection(hour, isThisHourNotAvailable)}
             >
               {hour}
             </Button>
