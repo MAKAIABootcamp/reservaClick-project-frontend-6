@@ -65,6 +65,7 @@ const Calendar = () => {
         text: 'Por favor, elige un horario antes de confirmar la reserva.',
         icon: 'error',
         confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#87CEEB',
       });
       return;
     } else {
@@ -87,6 +88,7 @@ const Calendar = () => {
         icon: 'success',
         showCancelButton: false,
         confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#87CEEB',
       }).then(result => {
         if (result.isConfirmed) {
           navigate('/reservation');
