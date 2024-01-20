@@ -57,6 +57,10 @@ const AppRouter = () => {
               <Route index element={<Home />} />
               <Route path='/home' element={<Home />} />
               <Route path='home/:storeName/calendar' element={<Calendar />} />
+              <Route
+                path='reservation/:storeName/calendar'
+                element={<Calendar />}
+              />
               <Route path='/profile' element={<UserProfile />} />
               <Route path='/reservation' element={<Reservation />} />
             </Route>

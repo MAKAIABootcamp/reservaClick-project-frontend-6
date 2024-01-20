@@ -1,5 +1,9 @@
 import { firestore } from '../../firebase/firebaseConfig';
-import { setError, setReservations } from './reservationSlice';
+import {
+  setError,
+  setReservationToEdit,
+  setReservations,
+} from './reservationSlice';
 import {
   doc,
   getDoc,
@@ -40,9 +44,34 @@ export const createReservation = newReservation => async dispatch => {
   }
 };
 
+export const updateReservation =
+  (reservation, reservationId) => async dispatch => {
+    try {
+      const reservationRef = doc(firestore, 'reservations', reservationId);
+      console.log('reservationRef:', reservationRef);
+      await updateDoc(reservationRef, {
+        ...reservation,
+      });
+      dispatch(setError(null));
+    } catch (error) {
+      console.log(error);
+      setError({ error: true, code: error.code, message: error.message });
+    }
+  };
+
 export const deleteReservation = reservation => async dispatch => {
   try {
     await deleteDoc(doc(firestore, 'reservations', reservation.id));
+    dispatch(setError(null));
+  } catch (error) {
+    console.log(error);
+    setError({ error: true, code: error.code, message: error.message });
+  }
+};
+
+export const setReservation = reservation => async dispatch => {
+  try {
+    dispatch(setReservationToEdit(reservation));
     dispatch(setError(null));
   } catch (error) {
     console.log(error);

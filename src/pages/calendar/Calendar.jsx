@@ -8,18 +8,15 @@ import {
   Heading,
   Flex,
 } from '@chakra-ui/react';
-import { format, addDays, addMonths, subMonths } from 'date-fns';
+import { format, addDays, addMonths, subMonths, isBefore } from 'date-fns';
 import es from 'date-fns/locale/es';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getStores,
-  setStore,
-  // updateHourAvailability,
-} from '../../store/stores/storeActions';
+import { getStores, setStore } from '../../store/stores/storeActions';
 import {
   createReservation,
   getReservations,
+  updateReservation,
 } from '../../store/reservations/reservationActions';
 import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md';
 import Swal from 'sweetalert2';
@@ -33,14 +30,31 @@ const Calendar = () => {
 
   const { user } = useSelector(store => store.user);
   const { stores, selectedStore } = useSelector(store => store.store);
-  const { reservations } = useSelector(store => store.reservation);
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedHour, setSelectedHour] = useState(null);
-
-  const reservationsForStore = reservations.filter(
-    reservation => reservation.storeId === selectedStore.id
+  const { reservations, reservationToEdit } = useSelector(
+    store => store.reservation
   );
+
+  const todayDate = new Date();
+  const [selectedDate, setSelectedDate] = useState(
+    new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate())
+  );
+  const [selectedHour, setSelectedHour] = useState(null);
+  const [reservationOnTheSameDay, setReservationOnTheSameDay] = useState(false);
+
+  const convertToDate = ({ seconds, nanoseconds }) =>
+    new Date(seconds * 1000 + nanoseconds / 1e6);
+
+  let reservationsForStore;
+
+  if (selectedStore) {
+    reservationsForStore = reservations.filter(
+      reservation => reservation.storeId === selectedStore.id
+    );
+  } else if (reservationToEdit.storeId) {
+    reservationsForStore = reservations.filter(
+      reservation => reservation.storeId === reservationToEdit.storeId
+    );
+  }
 
   useEffect(() => {
     dispatch(getReservations());
@@ -78,20 +92,33 @@ const Calendar = () => {
         reservationHour: selectedHour,
       };
 
-      // dispatch(updateHourAvailability(store, selectedHour, false));
-      dispatch(createReservation(reservation, user.uid));
-
-      Swal.fire({
-        title: '¡Reserva exitosa!',
-        text: `¡Tu reserva en ${storeName} fue exitosa!`,
-        icon: 'success',
-        showCancelButton: false,
-        confirmButtonText: 'Aceptar',
-      }).then(result => {
-        if (result.isConfirmed) {
-          navigate('/reservation');
-        }
-      });
+      if (!reservationToEdit) {
+        dispatch(createReservation(reservation));
+        Swal.fire({
+          title: '¡Reserva exitosa!',
+          text: `¡Tu reserva en ${storeName} fue exitosa!`,
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate('/reservation');
+          }
+        });
+      } else {
+        dispatch(updateReservation(reservation, reservationToEdit.id));
+        Swal.fire({
+          title: '¡Edición exitosa!',
+          text: `¡Tu reserva en ${storeName} fue exitosa!`,
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate('/reservation');
+          }
+        });
+      }
     }
   };
 
@@ -117,9 +144,6 @@ const Calendar = () => {
     setSelectedDate(addMonths(selectedDate, 1));
   };
 
-  const convertToDate = ({ seconds, nanoseconds }) =>
-    new Date(seconds * 1000 + nanoseconds / 1e6);
-
   const renderCalendar = () => {
     const daysInMonth = [];
     let currentDate = new Date(
@@ -137,6 +161,10 @@ const Calendar = () => {
       currentDate = addDays(currentDate, 1);
     }
 
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
     return (
       <>
         <Grid templateColumns='repeat(7, 1fr)' gap={2} mb={2}>
@@ -147,26 +175,38 @@ const Calendar = () => {
           ))}
         </Grid>
         <Grid templateColumns='repeat(7, 1fr)' gap={2}>
-          {daysInMonth.map(day => (
-            <Button
-              key={day}
-              variant={
-                day.getDate() === selectedDate.getDate() ? 'solid' : 'outline'
-              }
-              colorScheme='teal'
-              onClick={() => handleDateChange(day)}
-            >
-              {format(day, 'dd')}
-            </Button>
-          ))}
+          {daysInMonth.map(day => {
+            // console.log('Day: ', day);
+            return (
+              <Button
+                key={day}
+                isDisabled={isBefore(day, yesterday)}
+                variant={
+                  day.getDate() === selectedDate.getDate() ? 'solid' : 'outline'
+                }
+                colorScheme='teal'
+                onClick={() => handleDateChange(day)}
+              >
+                {format(day, 'dd')}
+              </Button>
+            );
+          })}
         </Grid>
       </>
     );
   };
 
   const renderHours = () => {
-    const schedule = selectedStore.schedule;
-    const hours = Object.keys(schedule);
+    const hours = [
+      '08:00',
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '14:00',
+      '15:00',
+      '16:00',
+    ];
 
     const sortedHours = hours.sort((a, b) => {
       const [hoursA, minutesA] = a.split(':').map(Number);
@@ -179,9 +219,14 @@ const Calendar = () => {
       return hoursA - hoursB;
     });
 
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+
     return (
       <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={4}>
         {sortedHours.map(hour => {
+          const hourInt = Number.parseInt(hour.split(':').shift());
+
           const isThisHourNotAvailable = reservationsForStore.some(
             reservation =>
               `${selectedDate}${hour}` ===
@@ -189,9 +234,14 @@ const Calendar = () => {
                 reservation.reservationHour
               }`
           );
+
           return (
             <Button
-              isDisabled={isThisHourNotAvailable}
+              isDisabled={
+                isThisHourNotAvailable ||
+                (currentDate.getDate() === selectedDate.getDate() &&
+                  hourInt <= currentHour)
+              }
               key={hour}
               variant={hour === selectedHour ? 'solid' : 'outline'}
               colorScheme={isThisHourNotAvailable ? 'red' : 'teal'}

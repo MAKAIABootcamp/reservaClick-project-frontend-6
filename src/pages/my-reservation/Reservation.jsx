@@ -12,6 +12,7 @@ import {
 import {
   deleteReservation,
   getReservations,
+  setReservation,
 } from '../../store/reservations/reservationActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -28,15 +29,18 @@ const Reserva = ({ store, date, hour, onEdit, onDelete }) => {
     day: 'numeric',
   };
 
+  const hourInt = Number.parseInt(hour);
+  let identifier = hourInt < 12 ? 'AM' : 'PM';
+
   return (
     <Box borderWidth='1px' borderRadius='lg' p='4' m='2' w='300px'>
-      <Heading as='h3' size='lg' mb='2'>
+      <Heading as='h3' size='lg' mb='2' textAlign='center'>
         {store}
       </Heading>
       <Divider />
       <br />
       <Text mb='2'>{date.toLocaleDateString('es-ES', options)}</Text>
-      <Text mb='4'>{`${hour} - ${String(parseInt(hour) + 1)}:00`}</Text>
+      <Text mb='4'>{`${hour} - ${String(hourInt + 1)}:00 ${identifier}`}</Text>
       <Flex justifyContent='space-between'>
         <Button bg='#B0E0E6' _hover={{ bg: '#87CEEB' }} onClick={onEdit}>
           Editar
@@ -59,13 +63,12 @@ const Reservation = () => {
   useEffect(() => {
     dispatch(getReservations());
     dispatch(getStores());
+    dispatch(setReservation(null));
   }, []);
 
   const myReservations = reservations.filter(
     reservation => reservation.userId === user.uid
   );
-
-  console.log(myReservations);
 
   const findStoreNameById = storeId => {
     const store = stores.find(store => store.id === storeId);
@@ -74,6 +77,11 @@ const Reservation = () => {
 
   const convertToDate = ({ seconds, nanoseconds }) =>
     new Date(seconds * 1000 + nanoseconds / 1e6);
+
+  const handleEditReservation = (reservation, storeName) => {
+    dispatch(setReservation(reservation));
+    navigate(`${storeName.replaceAll(' ', '-')}/calendar`);
+  };
 
   const handleCancelReservation = (reservation, storeName) => {
     Swal.fire({
@@ -120,7 +128,7 @@ const Reservation = () => {
                   store={storeName}
                   date={date}
                   hour={myReservation.reservationHour}
-                  onEdit={() => console.log('Editar primera reserva')}
+                  onEdit={() => handleEditReservation(myReservation, storeName)}
                   onDelete={() =>
                     handleCancelReservation(myReservation, storeName)
                   }
