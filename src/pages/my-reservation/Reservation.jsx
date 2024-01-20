@@ -42,10 +42,18 @@ const Reserva = ({ store, date, hour, onEdit, onDelete }) => {
       <Text mb='2'>{date.toLocaleDateString('es-ES', options)}</Text>
       <Text mb='4'>{`${hour} - ${String(hourInt + 1)}:00 ${identifier}`}</Text>
       <Flex justifyContent='space-between'>
-        <Button bg='#B0E0E6' _hover={{ bg: '#87CEEB' }} onClick={onEdit}>
+        <Button
+          bg='#B0E0E6'
+          _hover={{ bg: '#87CEEB', color: 'white' }}
+          onClick={onEdit}
+        >
           Editar
         </Button>
-        <Button bg='#FF6666' _hover={{ bg: '#CC3333' }} onClick={onDelete}>
+        <Button
+          bg='#FF6666'
+          _hover={{ bg: '#CC3333', color: 'white' }}
+          onClick={onDelete}
+        >
           Eliminar
         </Button>
       </Flex>
@@ -83,14 +91,14 @@ const Reservation = () => {
     navigate(`${storeName.replaceAll(' ', '-')}/calendar`);
   };
 
-  const handleCancelReservation = (reservation, storeName) => {
+  const handleDeleteReservation = (reservation, storeName) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esto cambios no se pueden revertir',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#FF6666',
-      cancelButtonColor: '#B0E0E6',
+      cancelButtonColor: '#87ceeb',
       cancelButtonText: 'Cancelar',
       confirmButtonText: 'Eliminar',
     }).then(async result => {
@@ -102,6 +110,7 @@ const Reservation = () => {
           text: `Tu reserva en ${storeName} fue eliminada`,
           icon: 'success',
           showCancelButton: false,
+          confirmButtonColor: '#87ceeb',
           confirmButtonText: 'Aceptar',
         }).then(result => {
           if (result.isConfirmed) {
@@ -130,7 +139,7 @@ const Reservation = () => {
                   hour={myReservation.reservationHour}
                   onEdit={() => handleEditReservation(myReservation, storeName)}
                   onDelete={() =>
-                    handleCancelReservation(myReservation, storeName)
+                    handleDeleteReservation(myReservation, storeName)
                   }
                 />
               );

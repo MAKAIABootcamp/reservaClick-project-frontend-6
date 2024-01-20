@@ -61,11 +61,7 @@ const UserProfile = () => {
         <IconButton icon={<FaCheck />} {...getSubmitButtonProps()} />
         <IconButton icon={<FaWindowClose />} {...getCancelButtonProps()} />
       </ButtonGroup>
-    ) : null; /* (
-      <Flex justifyContent='left'>
-        <IconButton size='md' icon={<FaEdit />} {...getEditButtonProps()} />
-      </Flex>
-    ); */
+    ) : null;
   }
 
   const handleLogout = () => {
@@ -153,7 +149,7 @@ const UserProfile = () => {
                 onClick={() => handleDeleteAccount()}
                 type='submit'
                 bg='#FF6666'
-                _hover={{ bg: '#CC3333' }}
+                _hover={{ bg: '#CC3333', color: 'white' }}
                 mt={2}
               >
                 Eliminar Cuenta
@@ -162,7 +158,7 @@ const UserProfile = () => {
                 onClick={() => handleLogout()}
                 type='submit'
                 bg='#B0E0E6'
-                _hover={{ bg: '#87CEEB' }}
+                _hover={{ bg: '#87CEEB', color: 'white' }}
                 mt={2}
               >
                 Cerrar Sesión
@@ -174,7 +170,6 @@ const UserProfile = () => {
       <div className='mobile'>
         <Flex align='center' justify='center' height='100vh'>
           <Box
-            // width={{ base: '100%', md: '50%' }}
             width='350px'
             p={6}
             borderWidth='1px'
@@ -192,7 +187,7 @@ const UserProfile = () => {
               <Avatar src={user.photoURL} size='2xl' />
             </Box>
             <br />
-            <Flex align='center'>
+            <Flex direction={'column'} align='center'>
               <Box>
                 <Editable
                   className='main_container__profile__editable'
