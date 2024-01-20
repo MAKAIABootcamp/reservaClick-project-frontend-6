@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getStores,
   setStore,
-  updateHourAvailability,
+  // updateHourAvailability,
 } from '../../store/stores/storeActions';
 import {
   createReservation,
@@ -82,7 +82,7 @@ const Calendar = () => {
       dispatch(createReservation(reservation, user.uid));
 
       Swal.fire({
-        title: 'Reserva exitosa!',
+        title: '¡Reserva exitosa!',
         text: `¡Tu reserva en ${storeName} fue exitosa!`,
         icon: 'success',
         showCancelButton: false,

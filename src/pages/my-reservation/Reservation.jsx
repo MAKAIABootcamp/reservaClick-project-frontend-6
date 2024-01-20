@@ -9,12 +9,18 @@ import {
   Text,
   Divider,
 } from '@chakra-ui/react';
-import { getReservations } from '../../store/reservations/reservationActions';
+import {
+  deleteReservation,
+  getReservations,
+} from '../../store/reservations/reservationActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { getStores } from '../../store/stores/storeActions';
 import './reservation.scss';
+import Swal from 'sweetalert2';
+import { sweetAlert } from '../../utils/alerts';
 
-const Reserva = ({ store, date, hour, onEdit, onCancel }) => {
+const Reserva = ({ store, date, hour, onEdit, onDelete }) => {
   let options = {
     weekday: 'long',
     year: 'numeric',
@@ -35,8 +41,8 @@ const Reserva = ({ store, date, hour, onEdit, onCancel }) => {
         <Button bg='#B0E0E6' _hover={{ bg: '#87CEEB' }} onClick={onEdit}>
           Editar
         </Button>
-        <Button bg='#FF6666' _hover={{ bg: '#CC3333' }} onClick={onCancel}>
-          Cancelar
+        <Button bg='#FF6666' _hover={{ bg: '#CC3333' }} onClick={onDelete}>
+          Eliminar
         </Button>
       </Flex>
     </Box>
@@ -45,6 +51,7 @@ const Reserva = ({ store, date, hour, onEdit, onCancel }) => {
 
 const Reservation = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector(store => store.user);
   const { stores } = useSelector(store => store.store);
   const { reservations } = useSelector(store => store.reservation);
@@ -58,7 +65,7 @@ const Reservation = () => {
     reservation => reservation.userId === user.uid
   );
 
-  // console.log(myReservations[0]?.reservationDate);
+  console.log(myReservations);
 
   const findStoreNameById = storeId => {
     const store = stores.find(store => store.id === storeId);
@@ -68,8 +75,34 @@ const Reservation = () => {
   const convertToDate = ({ seconds, nanoseconds }) =>
     new Date(seconds * 1000 + nanoseconds / 1e6);
 
-  // console.log(convertToDate(myReservations[0]?.reservationDate));
+  const handleCancelReservation = (reservation, storeName) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esto cambios no se pueden revertir',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#FF6666',
+      cancelButtonColor: '#B0E0E6',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Eliminar',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        dispatch(deleteReservation(reservation));
 
+        Swal.fire({
+          title: 'Eliminada!',
+          text: `Tu reserva en ${storeName} fue eliminada`,
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar',
+        }).then(result => {
+          if (result.isConfirmed) {
+            navigate('/home');
+          }
+        });
+      }
+    });
+  };
   return (
     <main>
       <section className='section_reservas'>
@@ -77,16 +110,23 @@ const Reservation = () => {
         <br />
         <Flex flexWrap='wrap' alignItems='center' justifyContent='center'>
           {myReservations.length > 0 ? (
-            myReservations.map((myReservation, index) => (
-              <Reserva
-                key={index}
-                store={findStoreNameById(myReservation.storeId)}
-                date={convertToDate(myReservation.reservationDate)}
-                hour={myReservation.reservationHour}
-                onEdit={() => console.log('Editar primera reserva')}
-                onCancel={() => console.log('Cancelar primera reserva')}
-              />
-            ))
+            myReservations.map((myReservation, index) => {
+              const storeName = findStoreNameById(myReservation.storeId);
+              const date = convertToDate(myReservation.reservationDate);
+
+              return (
+                <Reserva
+                  key={index}
+                  store={storeName}
+                  date={date}
+                  hour={myReservation.reservationHour}
+                  onEdit={() => console.log('Editar primera reserva')}
+                  onDelete={() =>
+                    handleCancelReservation(myReservation, storeName)
+                  }
+                />
+              );
+            })
           ) : (
             <Text fontSize='lg' textAlign='center'>
               Oops!..., parece que aún no tienes reservas

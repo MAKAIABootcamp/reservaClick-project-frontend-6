@@ -16,6 +16,7 @@ import './home.scss';
 import { useNavigate } from 'react-router-dom';
 import { getStores, setStore } from '../../store/stores/storeActions';
 import { useDispatch, useSelector } from 'react-redux';
+import { getReservations } from '../../store/reservations/reservationActions';
 
 const Home = () => {
   const { stores } = useSelector(store => store.store);
@@ -24,6 +25,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getStores());
+    dispatch(getReservations());
   }, []);
 
   const navigate = useNavigate();

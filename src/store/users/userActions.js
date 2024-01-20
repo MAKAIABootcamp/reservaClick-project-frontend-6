@@ -152,7 +152,6 @@ export const updateUserName = (user, displayName) => async dispatch => {
     })
       .then(() => {
         window.location.reload();
-        v;
       })
       .catch(error => {
         console.log(error);

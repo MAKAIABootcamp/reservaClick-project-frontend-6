@@ -9,8 +9,6 @@ import {
   getDocs,
   setDoc,
   addDoc,
-  arrayUnion,
-  arrayRemove,
 } from 'firebase/firestore';
 
 export const getReservations = () => async dispatch => {
@@ -18,7 +16,7 @@ export const getReservations = () => async dispatch => {
     const querySnapshot = await getDocs(collection(firestore, 'reservations'));
     let reservations = [];
     querySnapshot.forEach(doc => {
-      reservations.push(doc.data());
+      reservations.push({ ...doc.data(), id: doc.id });
     });
     dispatch(setReservations(reservations));
     dispatch(setError(false));
@@ -42,14 +40,12 @@ export const createReservation = newReservation => async dispatch => {
   }
 };
 
-/* export const createReservation = (reservation, uid) => async dispatch => {
+export const deleteReservation = reservation => async dispatch => {
   try {
-    const newReservationRef = doc(firestore, 'reservations', uid);
-    await setDoc(newReservationRef, reservation);
+    await deleteDoc(doc(firestore, 'reservations', reservation.id));
+    dispatch(setError(null));
   } catch (error) {
-    console.warn(error);
-    dispatch(
-      setError({ error: true, code: error.code, message: error.message })
-    );
+    console.log(error);
+    setError({ error: true, code: error.code, message: error.message });
   }
-}; */
+};

@@ -38,7 +38,7 @@ export const setStore = store => async dispatch => {
   }
 };
 
-export const updateHourAvailability =
+/* export const updateHourAvailability =
   (store, hour, availability) => async dispatch => {
     try {
       const storeRef = doc(firestore, 'stores', store.uid);
@@ -59,4 +59,4 @@ export const updateHourAvailability =
         setError({ error: true, code: error.code, message: error.message })
       );
     }
-  };
+  }; */
