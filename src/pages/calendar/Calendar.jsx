@@ -39,27 +39,29 @@ const Calendar = () => {
     new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate())
   );
   const [selectedHour, setSelectedHour] = useState(null);
-  const [reservationOnTheSameDay, setReservationOnTheSameDay] = useState(false);
+
+  useEffect(() => {
+    dispatch(getReservations());
+    dispatch(getStores());
+    if (!selectedStore?.id && !reservationToEdit?.storeId) {
+      navigate('/home');
+    }
+  }, [selectedStore, reservationToEdit, navigate]);
 
   const convertToDate = ({ seconds, nanoseconds }) =>
     new Date(seconds * 1000 + nanoseconds / 1e6);
 
-  let reservationsForStore;
+  let reservationsForStore = null;
 
   if (selectedStore) {
     reservationsForStore = reservations.filter(
       reservation => reservation.storeId === selectedStore.id
     );
-  } else if (reservationToEdit.storeId) {
+  } else if (reservationToEdit) {
     reservationsForStore = reservations.filter(
       reservation => reservation.storeId === reservationToEdit.storeId
     );
   }
-
-  useEffect(() => {
-    dispatch(getReservations());
-    dispatch(getStores());
-  }, []);
 
   const handleDateChange = newDate => {
     setSelectedDate(newDate);
@@ -147,171 +149,177 @@ const Calendar = () => {
     setSelectedDate(addMonths(selectedDate, 1));
   };
 
-  const renderCalendar = () => {
-    const daysInMonth = [];
-    let currentDate = new Date(
-      selectedDate.getFullYear(),
-      selectedDate.getMonth(),
-      1
-    );
+  if (reservationsForStore) {
+    const renderCalendar = () => {
+      const daysInMonth = [];
+      let currentDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        1
+      );
 
-    const dayNames = [...Array(7)].map((_, index) =>
-      format(addDays(currentDate, index), 'EEEE', { locale: es }).slice(0, 2)
-    );
+      const dayNames = [...Array(7)].map((_, index) =>
+        format(addDays(currentDate, index), 'EEEE', { locale: es }).slice(0, 2)
+      );
 
-    while (currentDate.getMonth() === selectedDate.getMonth()) {
-      daysInMonth.push(new Date(currentDate));
-      currentDate = addDays(currentDate, 1);
-    }
+      while (currentDate.getMonth() === selectedDate.getMonth()) {
+        daysInMonth.push(new Date(currentDate));
+        currentDate = addDays(currentDate, 1);
+      }
 
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
 
-    return (
-      <>
-        <Grid templateColumns='repeat(7, 1fr)' gap={2} mb={2}>
-          {dayNames.map(dayName => (
-            <Text key={dayName} textAlign='center'>
-              {dayName}
-            </Text>
-          ))}
-        </Grid>
-        <Grid templateColumns='repeat(7, 1fr)' gap={2}>
-          {daysInMonth.map(day => {
-            // console.log('Day: ', day);
+      return (
+        <>
+          <Grid templateColumns='repeat(7, 1fr)' gap={2} mb={2}>
+            {dayNames.map(dayName => (
+              <Text key={dayName} textAlign='center'>
+                {dayName}
+              </Text>
+            ))}
+          </Grid>
+          <Grid templateColumns='repeat(7, 1fr)' gap={2}>
+            {daysInMonth.map(day => {
+              // console.log('Day: ', day);
+              return (
+                <Button
+                  key={day}
+                  isDisabled={isBefore(day, yesterday)}
+                  variant={
+                    day.getDate() === selectedDate.getDate()
+                      ? 'solid'
+                      : 'outline'
+                  }
+                  colorScheme='teal'
+                  onClick={() => handleDateChange(day)}
+                >
+                  {format(day, 'dd')}
+                </Button>
+              );
+            })}
+          </Grid>
+        </>
+      );
+    };
+
+    const renderHours = () => {
+      const hours = [
+        '08:00',
+        '09:00',
+        '10:00',
+        '11:00',
+        '12:00',
+        '14:00',
+        '15:00',
+        '16:00',
+      ];
+
+      const sortedHours = hours.sort((a, b) => {
+        const [hoursA, minutesA] = a.split(':').map(Number);
+        const [hoursB, minutesB] = b.split(':').map(Number);
+
+        if (hoursA === hoursB) {
+          return minutesA - minutesB;
+        }
+
+        return hoursA - hoursB;
+      });
+
+      const currentDate = new Date();
+      const currentHour = currentDate.getHours();
+
+      return (
+        <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={4}>
+          {sortedHours.map(hour => {
+            const hourInt = Number.parseInt(hour.split(':').shift());
+
+            const isThisHourNotAvailable = reservationsForStore.some(
+              reservation =>
+                `${selectedDate}${hour}` ===
+                `${convertToDate(reservation.reservationDate)}${
+                  reservation.reservationHour
+                }`
+            );
+
             return (
               <Button
-                key={day}
-                isDisabled={isBefore(day, yesterday)}
-                variant={
-                  day.getDate() === selectedDate.getDate() ? 'solid' : 'outline'
+                isDisabled={
+                  isThisHourNotAvailable ||
+                  (currentDate.getDate() === selectedDate.getDate() &&
+                    hourInt <= currentHour)
                 }
-                colorScheme='teal'
-                onClick={() => handleDateChange(day)}
+                key={hour}
+                variant={hour === selectedHour ? 'solid' : 'outline'}
+                colorScheme={isThisHourNotAvailable ? 'red' : 'teal'}
+                onClick={() =>
+                  handleHourSelection(hour, isThisHourNotAvailable)
+                }
               >
-                {format(day, 'dd')}
+                {hour}
               </Button>
             );
           })}
         </Grid>
-      </>
-    );
-  };
-
-  const renderHours = () => {
-    const hours = [
-      '08:00',
-      '09:00',
-      '10:00',
-      '11:00',
-      '12:00',
-      '14:00',
-      '15:00',
-      '16:00',
-    ];
-
-    const sortedHours = hours.sort((a, b) => {
-      const [hoursA, minutesA] = a.split(':').map(Number);
-      const [hoursB, minutesB] = b.split(':').map(Number);
-
-      if (hoursA === hoursB) {
-        return minutesA - minutesB;
-      }
-
-      return hoursA - hoursB;
-    });
-
-    const currentDate = new Date();
-    const currentHour = currentDate.getHours();
+      );
+    };
 
     return (
-      <Grid templateColumns='repeat(4, 1fr)' gap={2} mt={4}>
-        {sortedHours.map(hour => {
-          const hourInt = Number.parseInt(hour.split(':').shift());
-
-          const isThisHourNotAvailable = reservationsForStore.some(
-            reservation =>
-              `${selectedDate}${hour}` ===
-              `${convertToDate(reservation.reservationDate)}${
-                reservation.reservationHour
-              }`
-          );
-
-          return (
-            <Button
-              isDisabled={
-                isThisHourNotAvailable ||
-                (currentDate.getDate() === selectedDate.getDate() &&
-                  hourInt <= currentHour)
-              }
-              key={hour}
-              variant={hour === selectedHour ? 'solid' : 'outline'}
-              colorScheme={isThisHourNotAvailable ? 'red' : 'teal'}
-              onClick={() => handleHourSelection(hour, isThisHourNotAvailable)}
-            >
-              {hour}
-            </Button>
-          );
-        })}
-      </Grid>
+      <Box p={4} className='calendar'>
+        <Heading
+          as='h2'
+          size='xl'
+          display={'flex'}
+          justifyContent={'center'}
+          textAlign='center'
+        >
+          {`Reserva tu cita en ${storeName}`}
+        </Heading>
+        <br />
+        <Flex p={4} justifyContent={'space-between'}>
+          <Button onClick={handlePrevMonth}>
+            <MdArrowBackIos />
+          </Button>
+          <Text fontSize='xl' mb={4}>
+            {format(selectedDate, 'MMMM yyyy', { locale: es }).toUpperCase()}
+          </Text>
+          <Button onClick={handleNextMonth}>
+            <MdArrowForwardIos />
+          </Button>
+        </Flex>
+        <br />
+        {renderCalendar()}
+        <br />
+        {selectedDate && renderHours()}
+        <ButtonGroup
+          variant='outline'
+          spacing='6'
+          display={'flex'}
+          justifyContent={'center'}
+          marginTop={39}
+        >
+          <Button
+            bg='#B0E0E6'
+            _hover={{ bg: '#87CEEB' }}
+            onClick={() => handleConfirmReservation()}
+          >
+            Confirmar
+          </Button>
+          <Button
+            bg='#FF6666'
+            _hover={{ bg: '#CC3333' }}
+            onClick={() => handleCancel()}
+          >
+            Cancelar
+          </Button>
+        </ButtonGroup>
+        <br />
+        <br />
+        <br />
+      </Box>
     );
-  };
-
-  return (
-    <Box p={4} className='calendar'>
-      <Heading
-        as='h2'
-        size='xl'
-        display={'flex'}
-        justifyContent={'center'}
-        textAlign='center'
-      >
-        {`Reserva tu cita en ${storeName}`}
-      </Heading>
-      <br />
-      <Flex p={4} justifyContent={'space-between'}>
-        <Button onClick={handlePrevMonth}>
-          <MdArrowBackIos />
-        </Button>
-        <Text fontSize='xl' mb={4}>
-          {format(selectedDate, 'MMMM yyyy', { locale: es }).toUpperCase()}
-        </Text>
-        <Button onClick={handleNextMonth}>
-          <MdArrowForwardIos />
-        </Button>
-      </Flex>
-      <br />
-      {renderCalendar()}
-      <br />
-      {selectedDate && renderHours()}
-      <ButtonGroup
-        variant='outline'
-        spacing='6'
-        display={'flex'}
-        justifyContent={'center'}
-        marginTop={39}
-      >
-        <Button
-          bg='#B0E0E6'
-          _hover={{ bg: '#87CEEB' }}
-          onClick={() => handleConfirmReservation()}
-        >
-          Confirmar
-        </Button>
-        <Button
-          bg='#FF6666'
-          _hover={{ bg: '#CC3333' }}
-          onClick={() => handleCancel()}
-        >
-          Cancelar
-        </Button>
-      </ButtonGroup>
-      <br />
-      <br />
-      <br />
-    </Box>
-  );
+  }
 };
 
 export default Calendar;
