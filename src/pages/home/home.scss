@@ -18,9 +18,26 @@
       margin: 1em;
 
       &:hover {
-        cursor: pointer;
         background-color: #87ceeb;
-        transform: scale(1.05);
+        // transform: scale(1.05);
+      }
+
+      &__image {
+        &:hover {
+          cursor: pointer;
+          background-color: #87ceeb;
+          transform: scale(1.05);
+        }
+      }
+
+      &__text {
+        margin-top: 5px;
+
+        &:hover {
+          cursor: pointer;
+          color: white;
+          transform: scale(1.1);
+        }
       }
     }
   }

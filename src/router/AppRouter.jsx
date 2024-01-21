@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { setIsAuthenticated, setUser } from '../store/users/userSlice';
 import { auth } from '../firebase/firebaseConfig';
+import Location from '../pages/location/Location';
 
 const AppRouter = () => {
   const { isAuthenticated, user } = useSelector(store => store.user);
@@ -70,6 +71,7 @@ const AppRouter = () => {
             <Route element={<Layout />}>
               <Route index element={<Home />} />
               <Route path='/home' element={<Home />} />
+              <Route path='/home/:storeName/location' element={<Location />} />
               <Route path='home/:storeName/calendar' element={<Calendar />} />
               <Route
                 path='reservation/:storeName/calendar'

@@ -9,6 +9,7 @@ import {
   Image,
   List,
   ListItem,
+  Text,
 } from '@chakra-ui/react';
 import { FaSearch } from 'react-icons/fa';
 
@@ -33,6 +34,12 @@ const Home = () => {
   const navigateToCalendar = store => {
     const param = store.name.replace(/ /g, '-');
     navigate(`${param}/calendar`);
+    dispatch(setStore(store));
+  };
+
+  const navigateToLocation = store => {
+    const param = store.name.replace(/ /g, '-');
+    navigate(`${param}/location`);
     dispatch(setStore(store));
   };
 
@@ -68,7 +75,6 @@ const Home = () => {
             .map((item, index) => (
               <ListItem spacing={3} key={index}>
                 <Card
-                  onClick={() => navigateToCalendar(item)}
                   className='main_home_container__card_container__card'
                   maxW='sm'
                   boxShadow='lg'
@@ -76,6 +82,8 @@ const Home = () => {
                 >
                   <CardBody>
                     <Image
+                      className='main_home_container__card_container__card__image'
+                      onClick={() => navigateToCalendar(item)}
                       src={item.image}
                       alt={item.name}
                       w='14em'
@@ -83,6 +91,12 @@ const Home = () => {
                       borderRadius='lg'
                     />
                     <p>{item.name}</p>
+                    <Text
+                      className='main_home_container__card_container__card__text'
+                      onClick={() => navigateToLocation(item)}
+                    >
+                      Ver Ubicación
+                    </Text>
                   </CardBody>
                 </Card>
               </ListItem>
