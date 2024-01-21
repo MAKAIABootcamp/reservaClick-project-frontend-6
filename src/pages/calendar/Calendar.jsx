@@ -39,6 +39,7 @@ const Calendar = () => {
     new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate())
   );
   const [selectedHour, setSelectedHour] = useState(null);
+  const [calendatColor, setCalendatColor] = useState('cyan');
 
   useEffect(() => {
     dispatch(getReservations());
@@ -192,7 +193,7 @@ const Calendar = () => {
                       ? 'solid'
                       : 'outline'
                   }
-                  colorScheme='teal'
+                  colorScheme={calendatColor}
                   onClick={() => handleDateChange(day)}
                 >
                   {format(day, 'dd')}
@@ -252,7 +253,7 @@ const Calendar = () => {
                 }
                 key={hour}
                 variant={hour === selectedHour ? 'solid' : 'outline'}
-                colorScheme={isThisHourNotAvailable ? 'red' : 'teal'}
+                colorScheme={isThisHourNotAvailable ? 'red' : calendatColor}
                 onClick={() =>
                   handleHourSelection(hour, isThisHourNotAvailable)
                 }

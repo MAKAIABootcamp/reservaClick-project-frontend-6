@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { ChakraProvider, Heading, Spinner } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  Heading,
+  Spinner,
+  extendTheme,
+} from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Register from '../pages/register/Register';
 import Home from '../pages/home/Home';
@@ -19,6 +24,15 @@ const AppRouter = () => {
   const { isAuthenticated, user } = useSelector(store => store.user);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
+
+  const theme = extendTheme({
+    colors: {
+      brand: {
+        100: '#a1d6c7',
+        900: '#87ceeb',
+      },
+    },
+  });
 
   useEffect(() => {
     onAuthStateChanged(auth, userLogged => {
@@ -49,7 +63,7 @@ const AppRouter = () => {
   }
 
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <BrowserRouter>
         <Routes>
           <Route element={<PrivateRoutes isAuthenticated={isAuthenticated} />}>
