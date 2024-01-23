@@ -23,9 +23,9 @@ ReservaClick esa una applicación rapida y sencilla que permite hacer reservas e
 
 # Instalación e inicio de la app
 
-git clone https://github.com/MAKAIABootcamp/reservaClick-project-frontend-6.git
-npm install
-npm run dev
+#### git clone https://github.com/MAKAIABootcamp/reservaClick-project-frontend-6.git
+#### npm install
+#### npm run dev
 
 # Enlace a la app
 
